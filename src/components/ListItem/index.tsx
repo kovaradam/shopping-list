@@ -1,17 +1,38 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import Item from '../../model/items';
+import { useItems } from '../../store/items';
 
-type Props = { name: string };
+type Props = Item;
 
-const ListItem: React.FC<Props> = ({ name }) => {
-  const [volume, setVolume] = useState('5');
+const ListItem: React.FC<Props> = ({ name, id }) => {
+  const [volume, setVolume] = useState('1');
   const [units, setUnits] = useState('x');
+  const { updateItem } = useItems();
+  const nameInput = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (name === '' && nameInput.current) nameInput.current.focus();
+  }, []);
   return (
     <Wrapper>
-      <Title>{name}</Title>
+      <NameInput
+        tabIndex={id}
+        ref={nameInput}
+        value={name}
+        onChange={(event): void => updateItem(event.target.value, id)}
+      />
       <InputWrapper>
-        <VolumeInput value={volume} onChange={(event) => setVolume(event.target.value)} />
-        <UnitsInput value={units} onChange={(event) => setUnits(event.target.value)} />
+        <VolumeInput
+          tabIndex={id}
+          value={volume}
+          onChange={(event): void => setVolume(event.target.value)}
+        />
+        <UnitsInput
+          tabIndex={id}
+          value={units}
+          onChange={(event): void => setUnits(event.target.value)}
+        />
       </InputWrapper>
     </Wrapper>
   );
@@ -23,17 +44,12 @@ const Wrapper = styled.li`
   width: 100%;
   box-sizing: border-box;
   padding: 10px 15px;
+  padding-top: 15px;
   font-size: 2rem;
   border-bottom: 1px solid #ffee03;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-`;
-
-const Title = styled.h2`
-  font-weight: 300;
-  font-size: inherit;
-  margin: 0;
 `;
 
 const InputWrapper = styled.span`
@@ -62,4 +78,13 @@ const UnitsInput = styled(ListItemInput)`
   color: grey;
   font-size: 1.3rem;
   width: 1.5rem;
+`;
+
+const NameInput = styled(ListItemInput)`
+  font-weight: 300;
+  font-size: 1.6rem;
+  margin: 0;
+  width: 50vw;
+  height: auto;
+  box-sizing: border-box;
 `;

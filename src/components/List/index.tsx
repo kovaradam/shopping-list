@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
-import { items } from '../../store';
+import { useItems } from '../../store/items';
 import ListItem from '../ListItem';
 
 const List: React.FC = () => {
+  const { items } = useItems();
   return (
     <Wrapper>
-      {items.map((name) => (
-        <ListItem name={name} />
+      {items.map((item) => (
+        <ListItem key={item.id} {...item} />
       ))}
     </Wrapper>
   );
@@ -19,4 +20,5 @@ const Wrapper = styled.ul`
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-top: var(--header-height);
 `;
