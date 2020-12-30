@@ -31,6 +31,7 @@ const Wrapper = styled.header`
   align-items: center;
   justify-content: space-between;
   color: white;
+  z-index: 1;
 `;
 
 const Title = styled.h1`

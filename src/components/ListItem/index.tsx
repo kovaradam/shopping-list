@@ -3,38 +3,46 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import Item from '../../model/items';
 import { useItems } from '../../store/items';
+import Swipeable from '../Swipeable';
 
-type Props = Item;
+type Props = { isDisabled?: boolean } & Item;
 
-const ListItem: React.FC<Props> = ({ name, id }) => {
+const ListItem: React.FC<Props> = (props) => {
+  const { name, id } = props;
   const [volume, setVolume] = useState('1');
   const [units, setUnits] = useState('x');
   const { updateItem } = useItems();
+
   const nameInput = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (name === '' && nameInput.current) nameInput.current.focus();
   }, []);
   return (
-    <Wrapper>
-      <NameInput
-        tabIndex={id}
-        ref={nameInput}
-        value={name}
-        onChange={(event): void => updateItem(event.target.value, id)}
-      />
-      <InputWrapper>
-        <VolumeInput
+    <Swipeable>
+      <Wrapper>
+        <NameInput
           tabIndex={id}
-          value={volume}
-          onChange={(event): void => setVolume(event.target.value)}
+          ref={nameInput}
+          value={name}
+          disabled={props.isDisabled}
+          onChange={(event): void => updateItem(event.target.value, id)}
         />
-        <UnitsInput
-          tabIndex={id}
-          value={units}
-          onChange={(event): void => setUnits(event.target.value)}
-        />
-      </InputWrapper>
-    </Wrapper>
+        <InputWrapper>
+          <VolumeInput
+            tabIndex={id}
+            value={volume}
+            disabled={props.isDisabled}
+            onChange={(event): void => setVolume(event.target.value)}
+          />
+          <UnitsInput
+            tabIndex={id}
+            value={units}
+            disabled={props.isDisabled}
+            onChange={(event): void => setUnits(event.target.value)}
+          />
+        </InputWrapper>
+      </Wrapper>
+    </Swipeable>
   );
 };
 

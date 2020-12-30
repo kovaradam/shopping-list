@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Swipeable from './components/Swipeable';
 import Header from './components/Header';
 import List from './components/List';
 
@@ -8,6 +9,7 @@ const App: React.FC = () => {
     <Wrapper>
       <Header />
       <List />
+      <Swipeable />
     </Wrapper>
   );
 };
