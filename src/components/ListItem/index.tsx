@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import Item from '../../model/items';
+import styled, { keyframes } from 'styled-components';
+import Item from '../../model/item';
 import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 
@@ -11,33 +10,38 @@ const ListItem: React.FC<Props> = (props) => {
   const { name, id } = props;
   const [volume, setVolume] = useState('1');
   const [units, setUnits] = useState('x');
-  const { updateItem } = useItems();
-
+  const { updateItem, removeItem } = useItems();
   const nameInput = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (name === '' && nameInput.current) nameInput.current.focus();
-  }, []);
+  }, [name]);
+
+  if (props.isDiscarded) {
+    return <DeletePlaceholder />;
+  }
+
   return (
-    <Swipeable>
+    <Swipeable onSwipeLeft={(): void => removeItem(id)}>
       <Wrapper>
         <NameInput
           tabIndex={id}
           ref={nameInput}
           value={name}
-          disabled={props.isDisabled}
+          disabled={props.isDiscarded}
           onChange={(event): void => updateItem(event.target.value, id)}
         />
         <InputWrapper>
           <VolumeInput
             tabIndex={id}
             value={volume}
-            disabled={props.isDisabled}
+            disabled={props.isDiscarded}
             onChange={(event): void => setVolume(event.target.value)}
           />
           <UnitsInput
             tabIndex={id}
             value={units}
-            disabled={props.isDisabled}
+            disabled={props.isDiscarded}
             onChange={(event): void => setUnits(event.target.value)}
           />
         </InputWrapper>
@@ -48,16 +52,18 @@ const ListItem: React.FC<Props> = (props) => {
 
 export default ListItem;
 
+const itemHeight = '4.5rem';
+
 const Wrapper = styled.li`
   width: 100%;
   box-sizing: border-box;
   padding: 10px 15px;
-  padding-top: 15px;
   font-size: 2rem;
   border-bottom: 1px solid #ffee03;
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
+  height: ${itemHeight};
 `;
 
 const InputWrapper = styled.span`
@@ -95,4 +101,17 @@ const NameInput = styled(ListItemInput)`
   width: 50vw;
   height: auto;
   box-sizing: border-box;
+`;
+
+const hideItem = keyframes`
+  from {
+    height: ${itemHeight};
+  }
+  to{
+    height:0;
+  }
+`;
+
+const DeletePlaceholder = styled.div`
+  animation: ${hideItem} forwards 200ms;
 `;
