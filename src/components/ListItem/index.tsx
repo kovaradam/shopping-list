@@ -3,6 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import Item from '../../model/item';
 import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
+import { BiTrash } from 'react-icons/bi';
 
 type Props = { isDisabled?: boolean } & Item;
 
@@ -23,29 +24,34 @@ const ListItem: React.FC<Props> = (props) => {
 
   return (
     <Swipeable onSwipeLeft={(): void => removeItem(id)}>
-      <Wrapper>
-        <NameInput
-          tabIndex={id}
-          ref={nameInput}
-          value={name}
-          disabled={props.isDiscarded}
-          onChange={(event): void => updateItem(event.target.value, id)}
-        />
-        <InputWrapper>
-          <VolumeInput
+      <Container>
+        <ItemWrapper>
+          <NameInput
             tabIndex={id}
-            value={volume}
+            ref={nameInput}
+            value={name}
             disabled={props.isDiscarded}
-            onChange={(event): void => setVolume(event.target.value)}
+            onChange={(event): void => updateItem(event.target.value, id)}
           />
-          <UnitsInput
-            tabIndex={id}
-            value={units}
-            disabled={props.isDiscarded}
-            onChange={(event): void => setUnits(event.target.value)}
-          />
-        </InputWrapper>
-      </Wrapper>
+          <InputWrapper>
+            <VolumeInput
+              tabIndex={id}
+              value={volume}
+              disabled={props.isDiscarded}
+              onChange={(event): void => setVolume(event.target.value)}
+            />
+            <UnitsInput
+              tabIndex={id}
+              value={units}
+              disabled={props.isDiscarded}
+              onChange={(event): void => setUnits(event.target.value)}
+            />
+          </InputWrapper>
+        </ItemWrapper>
+        <DiscardWrapper>
+          <DiscardIcon />
+        </DiscardWrapper>
+      </Container>
     </Swipeable>
   );
 };
@@ -54,7 +60,14 @@ export default ListItem;
 
 const itemHeight = '4.5rem';
 
-const Wrapper = styled.li`
+const Container = styled.li`
+  width: 100vw;
+  box-sizing: border-box;
+  display: flex;
+  height: min-content;
+`;
+
+const ItemWrapper = styled.li`
   width: 100%;
   box-sizing: border-box;
   padding: 10px 15px;
@@ -114,4 +127,18 @@ const hideItem = keyframes`
 
 const DeletePlaceholder = styled.div`
   animation: ${hideItem} forwards 200ms;
+`;
+
+const DiscardWrapper = styled.div`
+  width: 50vw;
+  background-color: #575757;
+  margin-right: -100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const DiscardIcon = styled(BiTrash)`
+  color: white;
+  font-size: 2rem;
 `;

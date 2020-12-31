@@ -21,4 +21,6 @@ const Wrapper = styled.ul`
   margin: 0;
   padding: 0;
   padding-top: var(--header-height);
+  width: 100vw;
+  overflow: hidden;
 `;
