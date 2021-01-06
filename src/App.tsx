@@ -1,15 +1,15 @@
 import React from 'react';
 import styled from 'styled-components';
-import Swipeable from './components/Swipeable';
 import Header from './components/Header';
 import List from './components/List';
+import SideNavbar from './components/SideNavbar';
 
 const App: React.FC = () => {
   return (
     <Wrapper>
       <Header />
+      <SideNavbar />
       <List />
-      <Swipeable />
     </Wrapper>
   );
 };

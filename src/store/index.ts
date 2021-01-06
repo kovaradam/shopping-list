@@ -10,7 +10,12 @@ export type ItemsStore = {
   _lastItemId: number;
 };
 
-export type Store = ItemsStore;
+export type LayoutStore = {
+  isSideNavbarHidden: boolean;
+  toggleIsSidenavbar: () => void;
+};
+
+export type Store = ItemsStore & LayoutStore;
 
 const initItems: Item[] = [
   { name: 'potatoes', id: 0 },
@@ -54,6 +59,11 @@ const useStore = create<Store>((set) => ({
       return { items: newItems };
     });
   },
+  isSideNavbarHidden: true,
+  toggleIsSidenavbar: (): void =>
+    set((state) => ({
+      isSideNavbarHidden: !state.isSideNavbarHidden,
+    })),
 }));
 
 export default useStore;

@@ -67,7 +67,7 @@ const Container = styled.li`
   height: min-content;
 `;
 
-const ItemWrapper = styled.li`
+const ItemWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
   padding: 10px 15px;
@@ -131,7 +131,7 @@ const DeletePlaceholder = styled.div`
 
 const DiscardWrapper = styled.div`
   width: 50vw;
-  background-color: #575757;
+  background-color: #fc5c5c;
   margin-right: -100%;
   display: flex;
   justify-content: center;

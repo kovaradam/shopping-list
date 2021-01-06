@@ -4,12 +4,14 @@ import BareButton from '../../styles/BareButton';
 import { BiPlus } from 'react-icons/bi';
 import { BiMenuAltLeft } from 'react-icons/bi';
 import { useItems } from '../../store/items';
+import useLayout from '../../store/layout';
 
 const Header: React.FC = () => {
   const { addItem } = useItems();
+  const { toggleIsSidenavbar } = useLayout();
   return (
     <Wrapper>
-      <Button>
+      <Button onClick={toggleIsSidenavbar}>
         <MenuIcon />
       </Button>
       <Title>Groceries</Title>
