@@ -11,8 +11,8 @@ export type ItemsStore = {
 };
 
 export type LayoutStore = {
-  isSideNavbarHidden: boolean;
-  toggleIsSidenavbar: () => void;
+  isSidenavHidden: boolean;
+  toggleIsSidenavHidden: () => void;
 };
 
 export type Store = ItemsStore & LayoutStore;
@@ -59,10 +59,10 @@ const useStore = create<Store>((set) => ({
       return { items: newItems };
     });
   },
-  isSideNavbarHidden: true,
-  toggleIsSidenavbar: (): void =>
+  isSidenavHidden: true,
+  toggleIsSidenavHidden: (): void =>
     set((state) => ({
-      isSideNavbarHidden: !state.isSideNavbarHidden,
+      isSidenavHidden: !state.isSidenavHidden,
     })),
 }));
 

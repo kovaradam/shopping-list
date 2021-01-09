@@ -2,13 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import Header from './components/Header';
 import List from './components/List';
-import SideNavbar from './components/SideNavbar';
+import Sidenav from './components/Sidenav';
 
 const App: React.FC = () => {
   return (
     <Wrapper>
       <Header />
-      <SideNavbar />
+      <Sidenav />
       <List />
     </Wrapper>
   );

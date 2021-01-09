@@ -4,10 +4,15 @@ import { useDrag } from 'react-use-gesture';
 const accelerate = 2;
 const triggerLimit = 100;
 
-type Props = {
-  onSwipeLeft?: () => void;
-  onSwipeRight?: () => void;
-};
+type Props =
+  | {
+      onSwipeLeft?: () => void;
+      onSwipeRight: () => void;
+    }
+  | {
+      onSwipeLeft: () => void;
+      onSwipeRight?: () => void;
+    };
 
 const Swipeable: React.FC<Props> = (props) => {
   const { children } = props;

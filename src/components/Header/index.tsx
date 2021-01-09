@@ -8,10 +8,11 @@ import useLayout from '../../store/layout';
 
 const Header: React.FC = () => {
   const { addItem } = useItems();
-  const { toggleIsSidenavbar } = useLayout();
+  const { toggleIsSidenavHidden } = useLayout();
+
   return (
     <Wrapper>
-      <Button onClick={toggleIsSidenavbar}>
+      <Button onClick={toggleIsSidenavHidden}>
         <MenuIcon />
       </Button>
       <Title>Groceries</Title>

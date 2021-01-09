@@ -1,12 +1,12 @@
 import useStore, { LayoutStore, Store } from '.';
 
-const sideNavbarStateSelector = (state: Store): LayoutStore => ({
-  toggleIsSidenavbar: state.toggleIsSidenavbar,
-  isSideNavbarHidden: state.isSideNavbarHidden,
+const sidenavStateSelector = (state: Store): LayoutStore => ({
+  toggleIsSidenavHidden: state.toggleIsSidenavHidden,
+  isSidenavHidden: state.isSidenavHidden,
 });
 
-const useLayout = (): ReturnType<typeof sideNavbarStateSelector> => {
-  return useStore(sideNavbarStateSelector);
+const useLayout = (): ReturnType<typeof sidenavStateSelector> => {
+  return useStore(sidenavStateSelector);
 };
 
 export default useLayout;
