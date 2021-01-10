@@ -1,12 +1,15 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import useLayout from '../../store/layout';
-import { FiChevronLeft } from 'react-icons/fi';
+import { FiChevronLeft, FiDelete, FiFolder, FiFolderPlus } from 'react-icons/fi';
 import useOnClickOutside from '../../hooks/on-click-outside';
-import SidenavItem from './SidenavItem';
+import Overlay from '../Overlay';
+import SidenavButton from './SidenavButton';
+import { useItems } from '../../store/items';
 
 const Sidenav: React.FC = () => {
   const { isSidenavHidden, toggleIsSidenavHidden } = useLayout();
+  const { deleteCurrentList } = useItems();
   const ref = useRef(null);
   const hide = useCallback(() => !isSidenavHidden && toggleIsSidenavHidden(), [
     isSidenavHidden,
@@ -14,14 +17,25 @@ const Sidenav: React.FC = () => {
   ]);
   useOnClickOutside(ref, hide);
   return (
-    <Wrapper ref={ref} isHidden={isSidenavHidden}>
-      <Header onClick={hide}>
-        <HideIcon />
-      </Header>
-      <ContentWrapper>
-        <SidenavItem />
-      </ContentWrapper>
-    </Wrapper>
+    <>
+      {!isSidenavHidden && <Overlay />}
+      <Wrapper ref={ref} isHidden={isSidenavHidden}>
+        <Header onClick={hide}>
+          <HideIcon />
+        </Header>
+        <ContentWrapper>
+          <SidenavButton Icon={SaveIcon} onClick={(): void => console.log('saved')}>
+            Save list
+          </SidenavButton>
+          <SidenavButton Icon={ClearIcon} onClick={deleteCurrentList}>
+            Delete list
+          </SidenavButton>
+          <SidenavButton Icon={ListsIcon} onClick={(): void => console.log('lists')}>
+            Lists
+          </SidenavButton>
+        </ContentWrapper>
+      </Wrapper>
+    </>
   );
 };
 
@@ -29,10 +43,10 @@ export default Sidenav;
 
 const Wrapper = styled.aside<{ isHidden: boolean }>`
   height: 100%;
-  position: absolute;
+  position: fixed;
   width: 75vw;
-  background-color: #fbf6f6;
-  z-index: 1;
+  background-color: white;
+  z-index: 2;
   transform: translateX(${(props): string => (props.isHidden ? '-105%' : '0%')});
   transition: transform 170ms ease-in;
   box-shadow: 0px 0px 15px -1px rgb(0 0 0 / 49%);
@@ -52,7 +66,7 @@ const Header = styled.header`
 
 const HideIcon = styled(FiChevronLeft)`
   font-size: 2rem;
-  color: antiquewhite;
+  color: var(--sidenav-color);
 `;
 
 const ContentWrapper = styled.div`
@@ -61,3 +75,7 @@ const ContentWrapper = styled.div`
   width: 100%;
   height: min-content;
 `;
+
+const SaveIcon = styled(FiFolderPlus)``;
+const ClearIcon = styled(FiDelete)``;
+const ListsIcon = styled(FiFolder)``;

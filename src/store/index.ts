@@ -7,6 +7,7 @@ export type ItemsStore = {
   addItem: (name: string) => void;
   removeItem: (id: number) => void;
   updateItem: (newName: string, id: number) => void;
+  setItems: (newItems: Item[]) => void;
   _lastItemId: number;
 };
 
@@ -59,6 +60,7 @@ const useStore = create<Store>((set) => ({
       return { items: newItems };
     });
   },
+  setItems: (newItems: Item[]): void => set(() => ({ items: newItems })),
   isSidenavHidden: true,
   toggleIsSidenavHidden: (): void =>
     set((state) => ({

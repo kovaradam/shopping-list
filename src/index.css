@@ -6,6 +6,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   --header-height: 12vh;
+  --sidenav-color: darkslategray;
 }
 
 code {
