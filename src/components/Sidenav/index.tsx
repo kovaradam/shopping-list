@@ -1,7 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import useLayout from '../../store/layout';
-import { FiChevronLeft, FiDelete, FiFolder, FiFolderPlus } from 'react-icons/fi';
+import { FiChevronLeft, FiDelete, FiFolderPlus } from 'react-icons/fi';
 import useOnClickOutside from '../../hooks/on-click-outside';
 import Overlay from '../Overlay';
 import SidenavButton from './SidenavButton';
@@ -32,9 +32,6 @@ const Sidenav: React.FC = () => {
             Delete list
           </SidenavButton>
           <SidenavList />
-          {/* <SidenavButton Icon={ListsIcon} onClick={(): void => console.log('lists')}>
-            Lists
-          </SidenavButton> */}
         </ContentWrapper>
       </Wrapper>
     </>
@@ -80,4 +77,3 @@ const ContentWrapper = styled.div`
 
 const SaveIcon = styled(FiFolderPlus)``;
 const ClearIcon = styled(FiDelete)``;
-const ListsIcon = styled(FiFolder)``;
