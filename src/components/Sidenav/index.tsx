@@ -6,6 +6,7 @@ import useOnClickOutside from '../../hooks/on-click-outside';
 import Overlay from '../Overlay';
 import SidenavButton from './SidenavButton';
 import { useItems } from '../../store/items';
+import SidenavList from './SidenavList';
 
 const Sidenav: React.FC = () => {
   const { isSidenavHidden, toggleIsSidenavHidden } = useLayout();
@@ -30,9 +31,10 @@ const Sidenav: React.FC = () => {
           <SidenavButton Icon={ClearIcon} onClick={deleteCurrentList}>
             Delete list
           </SidenavButton>
-          <SidenavButton Icon={ListsIcon} onClick={(): void => console.log('lists')}>
+          <SidenavList />
+          {/* <SidenavButton Icon={ListsIcon} onClick={(): void => console.log('lists')}>
             Lists
-          </SidenavButton>
+          </SidenavButton> */}
         </ContentWrapper>
       </Wrapper>
     </>
