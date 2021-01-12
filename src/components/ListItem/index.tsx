@@ -39,6 +39,8 @@ const ListItem: React.FC<Props> = (props) => {
               value={volume}
               disabled={props.isDiscarded}
               onChange={(event): void => setVolume(event.target.value)}
+              type="decimal"
+              pattern="[0-9]*"
             />
             <UnitsInput
               tabIndex={id}
@@ -71,6 +73,7 @@ const ItemWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
   padding: 10px 15px;
+  padding-bottom: 5px;
   font-size: 2rem;
   border-bottom: 1px solid #ffee03;
   display: flex;
@@ -87,7 +90,7 @@ const InputWrapper = styled.span`
 const ListItemInput = styled.input`
   width: 2rem;
   height: 1.5rem;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   background-color: transparent;
   border: none;
   border-radius: 2px;
@@ -103,13 +106,12 @@ const VolumeInput = styled(ListItemInput)`
 
 const UnitsInput = styled(ListItemInput)`
   color: grey;
-  font-size: 1.3rem;
   width: 1.5rem;
 `;
 
 const NameInput = styled(ListItemInput)`
   font-weight: 300;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   margin: 0;
   width: 50vw;
   height: auto;

@@ -52,6 +52,7 @@ const List = styled(BareList)``;
 
 const ListItem = styled.li`
   padding: 15px 25px;
+  font-size: 0.9rem;
 `;
 
 const ListsIcon = styled(FiFolder)``;

@@ -20,8 +20,9 @@ const Button = styled(BareButton)`
   box-sizing: border-box;
   padding: 15px 25px;
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  font-size: 1.3rem;
+  grid-template-columns: 1fr 3fr 1fr;
+  font-size: 1.1rem;
   color: var(--sidenav-color);
   text-align: start;
+  align-items: center;
 `;

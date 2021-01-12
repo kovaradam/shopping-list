@@ -29,7 +29,7 @@ const Sidenav: React.FC = () => {
             Save list
           </SidenavButton>
           <SidenavButton Icon={ClearIcon} onClick={deleteCurrentList}>
-            Delete list
+            Delete items
           </SidenavButton>
           <SidenavList />
         </ContentWrapper>
