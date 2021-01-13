@@ -18,10 +18,10 @@ export default SidenavButton;
 const Button = styled(BareButton)`
   width: 100%;
   box-sizing: border-box;
-  padding: 15px 25px;
+  padding: 15px 18px;
   display: grid;
-  grid-template-columns: 1fr 3fr 1fr;
-  font-size: 1.1rem;
+  grid-template-columns: 1fr 4fr 1fr;
+  font-size: 1rem;
   color: var(--sidenav-color);
   text-align: start;
   align-items: center;

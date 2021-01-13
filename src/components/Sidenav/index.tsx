@@ -43,7 +43,7 @@ export default Sidenav;
 const Wrapper = styled.aside<{ isHidden: boolean }>`
   height: 100%;
   position: fixed;
-  width: 75vw;
+  width: 65vw;
   background-color: white;
   z-index: 2;
   transform: translateX(${(props): string => (props.isHidden ? '-105%' : '0%')});
