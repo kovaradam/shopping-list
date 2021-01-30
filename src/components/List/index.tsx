@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useItems } from '../../store/items';
 import BareList from '../../styles/BareList';
-import ListItem from '../ListItem';
+import ListItem from './ListItem';
 
 const List: React.FC = () => {
   const { items } = useItems();

@@ -15,7 +15,10 @@ const ListItem: React.FC<Props> = (props) => {
   const nameInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (name === '' && nameInput.current) nameInput.current.focus();
+    const current = nameInput.current;
+    if (name === '' && current) {
+      current.focus();
+    }
   }, [name]);
 
   if (props.isDiscarded) {
@@ -60,7 +63,7 @@ const ListItem: React.FC<Props> = (props) => {
 
 export default ListItem;
 
-const itemHeight = '4.5rem';
+const itemHeight = '4rem';
 
 const Container = styled.li`
   width: 100vw;
@@ -95,6 +98,7 @@ const ListItemInput = styled.input`
   border: none;
   border-radius: 2px;
   outline-color: #e59700;
+  outline: none;
   &:focus {
     background-color: #ffee0321;
   }

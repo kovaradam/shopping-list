@@ -5,7 +5,6 @@ import { BiPlus } from 'react-icons/bi';
 import { BiMenuAltLeft } from 'react-icons/bi';
 import { useItems } from '../../store/items';
 import useLayout from '../../store/layout';
-import logo from './header-img.png';
 
 const Header: React.FC = () => {
   const { addItem } = useItems();
@@ -16,9 +15,7 @@ const Header: React.FC = () => {
       <Button onClick={toggleIsSidenavHidden}>
         <MenuIcon />
       </Button>
-      <Title>
-        <Logo src={logo} alt="header-logo" />
-      </Title>
+      <Title>notes</Title>
       <Button onClick={(): void => addItem('')}>
         <AddItemIcon />
       </Button>
@@ -46,13 +43,9 @@ const Title = styled.h1`
   text-justify: center;
   color: inherit;
   font-weight: 200;
+  font-size: 1.5rem;
   margin: 0;
   padding: 0;
-`;
-
-const Logo = styled.img`
-  width: 80px;
-  margin-top: 5px;
 `;
 
 const Button = styled(BareButton)`

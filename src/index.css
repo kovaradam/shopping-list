@@ -8,6 +8,7 @@ body {
 
   --header-height: 11vh;
   --sidenav-color: darkslategray;
+  --sidenav-action-color: #ff575738;
 }
 
 code {

@@ -58,7 +58,7 @@ const Wrapper = styled.div<{ isHidden: boolean }>`
 const Header = styled.div``;
 
 const Marker = styled.div`
-  background-color: #ffff0038;
+  background-color: var(--sidenav-action-color);
   width: 7px;
   height: 100%;
   position: absolute;

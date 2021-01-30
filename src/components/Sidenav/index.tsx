@@ -65,7 +65,7 @@ const Header = styled.header`
 
 const HideIcon = styled(FiChevronLeft)`
   font-size: 2rem;
-  color: var(--sidenav-color);
+  color: var(--sidenav-action-color);
 `;
 
 const ContentWrapper = styled.div`
