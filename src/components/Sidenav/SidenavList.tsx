@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FiFolder, FiX } from 'react-icons/fi';
 import styled from 'styled-components';
+import { initLists } from '../../model/list';
+import { useLists } from '../../store/items';
 import BareButton from '../../styles/BareButton';
 import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';
@@ -8,7 +10,7 @@ import SidenavButton from './SidenavButton';
 
 const SidenavList: React.FC = () => {
   const [isHidden, setIsHiddden] = useState(true);
-
+  const { addListToCurrent } = useLists();
   return (
     <Wrapper isHidden={isHidden}>
       {!isHidden && <Marker />}
@@ -22,24 +24,16 @@ const SidenavList: React.FC = () => {
       </Header>
       <SlideDown isHidden={isHidden}>
         <List>
-          <ListItem>
-            <ItemButton>Eggies and bacon</ItemButton>
-            <DeleteItemButton>
-              <DeleteIcon />
-            </DeleteItemButton>
-          </ListItem>
-          <ListItem>
-            <ItemButton>Curry chicken</ItemButton>
-            <DeleteItemButton>
-              <DeleteIcon />
-            </DeleteItemButton>
-          </ListItem>
-          <ListItem>
-            <ItemButton>Bacon and eggies</ItemButton>
-            <DeleteItemButton>
-              <DeleteIcon />
-            </DeleteItemButton>
-          </ListItem>
+          {initLists.map((list) => (
+            <ListItem key={list.id}>
+              <ItemButton onClick={(): void => addListToCurrent(list)}>
+                {list.name}
+              </ItemButton>
+              <DeleteItemButton>
+                <DeleteIcon />
+              </DeleteItemButton>
+            </ListItem>
+          ))}
         </List>
       </SlideDown>
     </Wrapper>

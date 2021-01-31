@@ -19,7 +19,7 @@ const Sidenav: React.FC = () => {
   useOnClickOutside(ref, hide);
   return (
     <>
-      {!isSidenavHidden && <Overlay />}
+      <Overlay isHidden={isSidenavHidden} />
       <Wrapper ref={ref} isHidden={isSidenavHidden}>
         <Header onClick={hide}>
           <HideIcon />

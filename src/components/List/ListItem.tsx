@@ -74,15 +74,15 @@ const Container = styled.li`
 
 const ItemWrapper = styled.div`
   width: 100%;
+  padding: 9px 14px;
+  padding-bottom: 4px;
   box-sizing: border-box;
-  padding: 10px 15px;
-  padding-bottom: 5px;
-  font-size: 2rem;
   border-bottom: 1px solid #ffee03;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: ${itemHeight};
+  background-color: white;
 `;
 
 const InputWrapper = styled.span`
@@ -93,12 +93,11 @@ const InputWrapper = styled.span`
 const ListItemInput = styled.input`
   width: 2rem;
   height: 1.5rem;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   background-color: transparent;
   border: none;
   border-radius: 2px;
-  outline-color: #e59700;
-  outline: none;
+  margin: 1px;
   &:focus {
     background-color: #ffee0321;
   }
@@ -115,8 +114,7 @@ const UnitsInput = styled(ListItemInput)`
 
 const NameInput = styled(ListItemInput)`
   font-weight: 300;
-  font-size: 1.4rem;
-  margin: 0;
+  font-size: 1.2rem;
   width: 50vw;
   height: auto;
   box-sizing: border-box;
