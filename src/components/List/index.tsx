@@ -21,7 +21,7 @@ const List: React.FC = () => {
   }, [containerElement, preventDocumentScroll]);
 
   return (
-    <Wrapper ref={containerElement}>
+    <UList ref={containerElement}>
       {items.map((item) => (
         <ListItem
           onSwipeStart={handleItemSwipeStart}
@@ -30,13 +30,13 @@ const List: React.FC = () => {
           key={item.id}
         />
       ))}
-    </Wrapper>
+    </UList>
   );
 };
 
 export default List;
 
-const Wrapper = styled(BareList)`
+const UList = styled(BareList)`
   padding-top: var(--header-height);
   width: 100vw;
   overflow: hidden;
