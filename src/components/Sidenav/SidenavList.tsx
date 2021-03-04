@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiFolder, FiX } from 'react-icons/fi';
+import { FiFolder, FiX, FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
 import { initLists } from '../../model/list';
 import { useLists } from '../../store/items';
@@ -20,6 +20,9 @@ const SidenavList: React.FC = () => {
           onClick={(): void => setIsHiddden((isHidden) => !isHidden)}
         >
           Lists
+          <ListButtonIconWrapper isHidden={isHidden}>
+            <ListButtonIcon />
+          </ListButtonIconWrapper>
         </SidenavButton>
       </Header>
       <SlideDown isHidden={isHidden}>
@@ -59,6 +62,13 @@ const Marker = styled.div`
 `;
 
 const List = styled(BareList)``;
+
+const ListButtonIconWrapper = styled.span<{ isHidden: boolean }>`
+  justify-self: flex-end;
+  transform: rotate(${(props): string => `${!props.isHidden && '18'}0deg`});
+`;
+
+const ListButtonIcon = styled(FiChevronDown)``;
 
 const ListItem = styled.li`
   padding-left: 10px;

@@ -1,11 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import Item from '../../model/item';
 import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
 
-type Props = { isDisabled?: boolean } & Item;
+type Props = {
+  isDisabled?: boolean;
+  onSwipeStart?: () => void;
+  onSwipeEnd?: () => void;
+  onSwipeLeft?: () => void;
+} & Item;
 
 const ListItem: React.FC<Props> = (props) => {
   const { name, id } = props;
@@ -13,6 +18,9 @@ const ListItem: React.FC<Props> = (props) => {
   const [units, setUnits] = useState('x');
   const { updateItem, removeItem } = useItems();
   const nameInput = useRef<HTMLInputElement>(null);
+  const handleSwipeLeft = useCallback((): void => {
+    removeItem(id);
+  }, [id, removeItem]);
 
   useEffect(() => {
     const current = nameInput.current;
@@ -26,7 +34,11 @@ const ListItem: React.FC<Props> = (props) => {
   }
 
   return (
-    <Swipeable onSwipeLeft={(): void => removeItem(id)}>
+    <Swipeable
+      onSwipeLeft={handleSwipeLeft}
+      onSwipeStart={props.onSwipeStart}
+      onSwipeEnd={props.onSwipeEnd}
+    >
       <Container>
         <ItemWrapper>
           <NameInput

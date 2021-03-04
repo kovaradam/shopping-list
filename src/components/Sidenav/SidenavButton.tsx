@@ -8,7 +8,7 @@ const SidenavButton: React.FC<Props> = ({ Icon, children, onClick }) => {
   return (
     <Button onClick={onClick}>
       <Icon />
-      <span>{children}</span>
+      {children}
     </Button>
   );
 };
