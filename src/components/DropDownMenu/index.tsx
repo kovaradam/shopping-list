@@ -2,13 +2,21 @@ import React, { useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
 import useOnClickOutside from '../../hooks/on-click-outside';
 
-type Props = { hide: () => void };
+type Props = { hide: () => void; isHideOnClick?: boolean };
 
-const DropDownMenu: React.FC<Props> = ({ hide, children }) => {
+const DropDownMenu: React.FC<Props> = (props) => {
+  const { hide, children } = props;
   const wrapperElement = useRef<HTMLDivElement>(null);
   useOnClickOutside(wrapperElement, hide);
   return (
-    <Wrapper onClick={hide} ref={wrapperElement}>
+    <Wrapper
+      onClick={(): void => {
+        if (props.isHideOnClick) {
+          hide();
+        }
+      }}
+      ref={wrapperElement}
+    >
       {children}
     </Wrapper>
   );

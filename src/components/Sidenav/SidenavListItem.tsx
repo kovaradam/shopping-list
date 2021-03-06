@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import styled from 'styled-components';
-import useOnClickOutside from '../../hooks/on-click-outside';
-import DBList from '../../model/list';
+import DBList, { newListNamePlaceholder } from '../../model/list';
 import { useLists } from '../../store/items';
 import BareButton from '../../styles/BareButton';
 import DropDownMenu from '../DropDownMenu';
@@ -18,43 +17,52 @@ const SidenavListItem: React.FC<Props> = ({ list }) => {
   const deleteList = useCallback(() => _deleteList(list.id), [list, _deleteList]);
 
   const nameInputElement = useRef<HTMLInputElement>(null);
-  useOnClickOutside(nameInputElement, () => setIsRenameActive(false));
 
-  const renameList = useCallback(
+  const renameList = useCallback(() => {
+    const newName = nameInputElement.current?.value;
+
+    if (newName === '') {
+      setIsRenameActive(false);
+      return;
+    }
+    // todo rename list
+    setIsRenameActive(false);
+  }, [setIsRenameActive]);
+
+  // weird workaround to handle ios safari keyboard done button
+  const submitRenameForm = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      const newName = (event.currentTarget.firstChild as HTMLInputElement)?.value;
-      if (newName === '') {
-        setIsRenameActive(false);
-        return;
-      }
-      // todo rename list
-      setIsRenameActive(false);
+      nameInputElement.current?.blur();
     },
-    [setIsRenameActive],
+    [nameInputElement],
   );
 
   useEffect(() => {
     if (isRenameActive) nameInputElement.current?.focus();
   }, [isRenameActive]);
 
+  useEffect(() => {
+    if (list.name === newListNamePlaceholder) setIsRenameActive(true);
+  }, [list]);
+
   return (
     <Wrapper>
-      <ListNameForm onSubmit={renameList} isHidden={!isRenameActive}>
-        <ListNameInput ref={nameInputElement} />
+      <ListNameForm isHidden={!isRenameActive} onSubmit={submitRenameForm}>
+        <ListNameInput ref={nameInputElement} onBlur={renameList} />
       </ListNameForm>
       {!isRenameActive && (
         <>
           <ItemButton onClick={(): void => addListToCurrent(list)}>
             {list.name}
           </ItemButton>
-          <ItemMenuButton>
-            <ItemMenuIcon onClick={(): void => setIsMenuOpen(true)} />
+          <ItemMenuButton onClick={(): void => setIsMenuOpen(true)}>
+            <ItemMenuIcon />
           </ItemMenuButton>
         </>
       )}
       {isMenuOpen && (
-        <DropDownMenu hide={hideListMenu}>
+        <DropDownMenu hide={hideListMenu} isHideOnClick>
           <ListMenuButton onClick={(): void => setIsRenameActive(true)}>
             Rename
           </ListMenuButton>
@@ -95,6 +103,7 @@ const ListNameForm = styled.form<{ isHidden: boolean }>`
 const ListNameInput = styled.input`
   border: none;
   height: 1.4rem;
+  font-size: 0.9rem;
   width: 100%;
 `;
 
