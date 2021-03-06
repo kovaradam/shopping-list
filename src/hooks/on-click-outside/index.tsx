@@ -5,7 +5,11 @@ const useOnClickOutside = (
   callback: () => void,
 ): void => {
   const listener = (event: MouseEvent): void => {
-    if (ref.current && !ref.current.contains(event.target as Node)) {
+    if (
+      ref.current &&
+      document.contains(event.target as Node) &&
+      !ref.current.contains(event.target as Node)
+    ) {
       callback();
     }
   };

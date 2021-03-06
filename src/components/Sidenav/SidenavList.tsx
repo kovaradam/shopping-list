@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { FiFolder, FiX, FiChevronDown } from 'react-icons/fi';
+import { FiFolder, FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
 import { initLists } from '../../model/list';
-import { useLists } from '../../store/items';
-import BareButton from '../../styles/BareButton';
 import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';
 import SidenavButton from './SidenavButton';
+import SidenavListItem from './SidenavListItem';
 
 const SidenavList: React.FC = () => {
   const [isHidden, setIsHiddden] = useState(true);
-  const { addListToCurrent } = useLists();
+
   return (
     <Wrapper isHidden={isHidden}>
       {!isHidden && <Marker />}
@@ -28,14 +27,7 @@ const SidenavList: React.FC = () => {
       <SlideDown isHidden={isHidden}>
         <List>
           {initLists.map((list) => (
-            <ListItem key={list.id}>
-              <ItemButton onClick={(): void => addListToCurrent(list)}>
-                {list.name}
-              </ItemButton>
-              <DeleteItemButton>
-                <DeleteIcon />
-              </DeleteItemButton>
-            </ListItem>
+            <SidenavListItem list={list} key={list.id} />
           ))}
         </List>
       </SlideDown>
@@ -69,24 +61,4 @@ const ListButtonIconWrapper = styled.span<{ isHidden: boolean }>`
 `;
 
 const ListButtonIcon = styled(FiChevronDown)``;
-
-const ListItem = styled.li`
-  padding-left: 10px;
-  padding-right: 3px;
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const ItemButton = styled(BareButton)`
-  font-size: inherit;
-  padding: 15px 15px;
-  color: var(--sidenav-color);
-`;
-
-const DeleteItemButton = styled(ItemButton)`
-  color: #b8b7b7;
-`;
-
-const DeleteIcon = styled(FiX)``;
 const ListsIcon = styled(FiFolder)``;

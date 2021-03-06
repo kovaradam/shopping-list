@@ -17,6 +17,5 @@ const defaultDuration = '170ms';
 
 const Wrapper = styled.div<{ isHidden: boolean; duration: string }>`
   max-height: ${(props): string => (props.isHidden ? '0' : '500px')};
-  /* transition: all ${(props): string => props.duration} linear; */
-  overflow: hidden;
+  overflow: ${(props): string => (props.isHidden ? 'hidden' : 'visible')};
 `;

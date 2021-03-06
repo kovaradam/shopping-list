@@ -26,14 +26,18 @@ export const useItems = (): UseItemsReturnType => {
 
 type UseListsReturnType = {
   addListToCurrent: (list: DBList) => void;
+  deleteList: (id: number) => void;
 };
+
 export const useLists = (): UseListsReturnType => {
   const addItem = useStore((state) => state.addItem);
   const addListToCurrent = useCallback(
     (list: DBList) => list.items.forEach((item) => addItem(item.name)),
     [addItem],
   );
-  return { addListToCurrent };
+  const deleteList = (id: number): void => window.alert('deleted');
+
+  return { addListToCurrent, deleteList };
 };
 
 export const createItem = (name: string, state: Store): Item => {
