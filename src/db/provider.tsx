@@ -9,12 +9,12 @@ const IndexedDBProvider: React.FC<Props> = (props) => {
   const { name, version, config } = props;
 
   useEffect(() => {
-    openDB(config, name, version)
+    openDB(name || 'ReactiveDB', version || 1, config)
       ?.then((result) => {
         db = result;
-        console.log(db);
+        console.log(db.name);
       })
-      .catch((err) => console.log(err));
+      .catch((error) => console.log(error));
   }, [name, version, config]);
 
   return <>{props.children}</>;

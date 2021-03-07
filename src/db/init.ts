@@ -22,9 +22,9 @@ export type DBConfig = {
 };
 
 export const openDB = (
+  name: string,
+  version: number,
   config: DBConfig,
-  name = 'ReactiveDB',
-  version = 1,
 ): Promise<IDBDatabase> => {
   const DBOpenRequest = window.indexedDB.open(name, version);
 
@@ -35,18 +35,20 @@ export const openDB = (
 
   if (!window.indexedDB) {
     promiseReject(
-      "Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.",
+      "Your browser doesn't support a stable version of IndexedDB. Sme features will not be available.",
     );
   }
 
   DBOpenRequest.onsuccess = (event: Event): void => {
     const db = (event.target as IDBOpenDBRequest).result;
-    registerErrorHandlers(db);
+    db.onerror = (event: Event): void => {
+      console.log((event.target as DBErrorEventTarget)?.errorCode);
+    };
     promiseResolve(db);
   };
 
   DBOpenRequest.onerror = (event: Event): void => {
-    promiseReject(`DB open error, code: ${(event.target as IDBOpenDBRequest)?.error}`);
+    promiseReject((event.target as IDBOpenDBRequest)?.error + '');
   };
 
   DBOpenRequest.onupgradeneeded = (event: IDBVersionChangeEvent): void => {
@@ -56,37 +58,36 @@ export const openDB = (
       );
       return;
     }
-
-    config.objectStores.forEach((storeParams) =>
-      handleDBUpgrade((event.target as IDBOpenDBRequest).result, storeParams),
-    );
+    const db = (event.target as IDBOpenDBRequest).result;
+    createStoresOnUpgrade(db, config.objectStores);
   };
 
   return promise;
 };
 
-function registerErrorHandlers(db: IDBDatabase): void {
-  db.onerror = (event: Event): void => {
-    console.log(`Database error: ${(event.target as DBErrorEventTarget)?.errorCode}`);
-  };
-}
+function createStoresOnUpgrade(db: IDBDatabase, params: ObjectStoreParams[]): void {
+  let objectStore: IDBObjectStore;
+  const writers: (() => void)[] = [];
+  params.forEach(({ name, options, indexes, data }) => {
+    objectStore = db.createObjectStore(name, options);
 
-function handleDBUpgrade(db: IDBDatabase, params: ObjectStoreParams): void {
-  const { name, options, indexes, data } = params;
-  const objectStore = db.createObjectStore(name, options);
+    // Create an indexes
+    indexes?.forEach(({ name, keyPath, options }) =>
+      objectStore.createIndex(name, keyPath, options),
+    );
 
-  // Create an indexes
-  indexes?.forEach(({ name, keyPath, options }) =>
-    objectStore.createIndex(name, keyPath, options),
-  );
-
-  // Use transaction oncomplete to make sure the objectStore creation is
-  // finished before adding data into it.
-  objectStore.transaction.oncomplete = (_: Event): void => {
-    // Store values in the newly created objectStore.
-    const dataObjectStore = db.transaction('items', 'readwrite').objectStore('items');
-    data.forEach((item) => {
-      dataObjectStore.add(item);
+    writers.push((): void => {
+      // Store values in the newly created objectStore.
+      const dataObjectStore = db.transaction(name, 'readwrite').objectStore(name);
+      data.forEach((item) => {
+        dataObjectStore.add(item);
+      });
     });
-  };
+
+    // Use transaction oncomplete to make sure the objectStore creation is
+    // finished before adding data into it.
+    objectStore.transaction.oncomplete = (_: Event): void => {
+      writers.forEach((write) => write());
+    };
+  });
 }
