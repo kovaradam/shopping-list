@@ -1,21 +1,23 @@
 import React, { useEffect } from 'react';
+import { openDB, DBConfig } from './init';
 
-type Props = { name?: string };
+type Props = { name?: string; version?: number; config: DBConfig };
 
-const IndexedDBProvider: React.FC<Props> = ({ name, children }) => {
+let db: IDBDatabase;
+
+const IndexedDBProvider: React.FC<Props> = (props) => {
+  const { name, version, config } = props;
+
   useEffect(() => {
-    if (!window.indexedDB) {
-      console.log(
-        "Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.",
-      );
-      return;
-    }
-    const request = window.indexedDB.open(name || 'ReactiveDB');
+    openDB(config, name, version)
+      ?.then((result) => {
+        db = result;
+        console.log(db);
+      })
+      .catch((err) => console.log(err));
+  }, [name, version, config]);
 
-    request.onsuccess = (): void => console.log('DB open success');
-    request.onerror = (): void => console.log('DB open error');
-  }, [name]);
-  return <>{children}</>;
+  return <>{props.children}</>;
 };
 
 export default IndexedDBProvider;
