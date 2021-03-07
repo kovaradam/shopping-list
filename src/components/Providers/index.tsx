@@ -1,6 +1,7 @@
 import React from 'react';
 import { IconContext } from 'react-icons/lib';
 import IndexedDBProvider from '../../db/Provider';
+
 import { initLists } from '../../model/list';
 import useStore from '../../store';
 
