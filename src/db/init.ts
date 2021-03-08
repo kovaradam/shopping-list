@@ -1,4 +1,4 @@
-import { createPromiseWithOutsideResolve } from './utils';
+import { createPromiseWithOutsideResolvers } from './utils';
 
 interface DBErrorEventTarget extends EventTarget {
   errorCode: string;
@@ -28,7 +28,7 @@ export const openDB = (
 ): Promise<IDBDatabase> => {
   const DBOpenRequest = window.indexedDB.open(name, version);
 
-  const [promise, promiseResolve, promiseReject] = createPromiseWithOutsideResolve<
+  const [promise, promiseResolve, promiseReject] = createPromiseWithOutsideResolvers<
     IDBDatabase,
     string
   >();

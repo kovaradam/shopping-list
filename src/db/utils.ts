@@ -1,7 +1,7 @@
 type OutsideResolve<T> = (value: T) => void;
 type OutsideReject<T> = (reason: T) => void;
 
-export function createPromiseWithOutsideResolve<Value, Reason>(): [
+export function createPromiseWithOutsideResolvers<Value, Reason>(): [
   Promise<Value>,
   OutsideResolve<Value>,
   OutsideReject<Reason>,
@@ -20,4 +20,11 @@ export function createPromiseWithOutsideResolve<Value, Reason>(): [
     outsideReject = reject;
   });
   return [promise, outsideResolve, outsideReject];
+}
+
+export function compareStringifiedObjects(
+  a: Record<string, unknown> | null,
+  b: Record<string, unknown> | null,
+): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
 }
