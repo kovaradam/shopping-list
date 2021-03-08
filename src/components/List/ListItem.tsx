@@ -4,6 +4,7 @@ import DBItem, { newItemNamePlaceholder } from '../../model/item';
 import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
+import useUpdate from '../../db/hooks/use-update';
 
 type Props = {
   isDisabled?: boolean;
