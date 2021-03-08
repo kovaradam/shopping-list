@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { FiFolder, FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
-import { initLists } from '../../model/list';
+import useRead from '../../db/hooks/use-read';
 import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';
 import SidenavButton from './SidenavButton';
 import SidenavListItem from './SidenavListItem';
+import DBList from '../../model/list';
 
 const SidenavList: React.FC = () => {
   const [isHidden, setIsHiddden] = useState(true);
+
+  const lists = useRead<DBList>('lists');
 
   return (
     <Wrapper isHidden={isHidden}>
@@ -26,7 +29,7 @@ const SidenavList: React.FC = () => {
       </Header>
       <SlideDown isHidden={isHidden}>
         <List>
-          {initLists.map((list) => (
+          {lists?.map((list) => (
             <SidenavListItem list={list} key={list.id} />
           ))}
         </List>

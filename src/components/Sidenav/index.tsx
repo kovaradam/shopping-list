@@ -17,6 +17,7 @@ const Sidenav: React.FC = () => {
     toggleIsSidenavHidden,
   ]);
   useOnClickOutside(ref, hide);
+
   return (
     <>
       <Overlay isHidden={isSidenavHidden} />
