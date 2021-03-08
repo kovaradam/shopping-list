@@ -103,7 +103,7 @@ const ListNameForm = styled.form<{ isHidden: boolean }>`
 const ListNameInput = styled.input`
   border: none;
   height: 1.4rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   width: 100%;
 `;
 
