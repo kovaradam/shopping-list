@@ -4,6 +4,7 @@ import Item from '../../model/item';
 import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
+import useUpdate from '../../db/hooks/use-update';
 
 type Props = {
   isDisabled?: boolean;
@@ -29,6 +30,13 @@ const ListItem: React.FC<Props> = (props) => {
     }
   }, [name]);
 
+  const update = useUpdate();
+
+  const updateDBItem = (event: React.FormEvent<HTMLFormElement>): void => {
+    event.preventDefault();
+    update('items', { value: { name: 'Bananas' } });
+  };
+
   if (props.isDiscarded) {
     return <DeletePlaceholder />;
   }
@@ -41,13 +49,15 @@ const ListItem: React.FC<Props> = (props) => {
     >
       <Container>
         <ItemWrapper>
-          <NameInput
-            tabIndex={id}
-            ref={nameInput}
-            value={name}
-            disabled={props.isDiscarded}
-            onChange={(event): void => updateItem(event.target.value, id)}
-          />
+          <form onSubmit={updateDBItem}>
+            <NameInput
+              tabIndex={id}
+              ref={nameInput}
+              value={name}
+              disabled={props.isDiscarded}
+              onChange={(event): void => updateItem(event.target.value, id)}
+            />
+          </form>
           <InputWrapper>
             <VolumeInput
               tabIndex={id}
