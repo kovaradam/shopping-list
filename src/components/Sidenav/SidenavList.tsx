@@ -20,6 +20,8 @@ const SidenavList: React.FC<Props> = ({ isHidden, setIsHiddden }) => {
     setIsHiddden((isHidden) => !isHidden);
   }, [setIsHiddden]);
 
+  const lists = useRead<DBList>('lists');
+
   return (
     <Wrapper isHidden={isHidden}>
       {!isHidden && <Marker />}
