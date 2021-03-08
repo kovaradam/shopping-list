@@ -5,7 +5,9 @@ type Props = { name?: string; version?: number; config: DBConfig };
 
 export type Context = {
   db: IDBDatabase | null;
-  triggerChange: () => void;
+  triggerUpdate: () => void;
+  transactionCount: number;
+  keepLastReadResults?: boolean;
 };
 
 export const DBContext = React.createContext<Context | null>(null);
@@ -14,10 +16,22 @@ DBContext.displayName = 'ReactiveDBContext';
 const IndexedDBProvider: React.FC<Props> = (props) => {
   const { name, version, config } = props;
   const [db, setDB] = useState<IDBDatabase | null>(null);
+  const [transactionCount, setTransactionCount] = useState(0);
 
-  const triggerChange = useCallback(() => setDB((prevState) => prevState), [setDB]);
+  const triggerUpdate = useCallback(() => {
+    console.log('update triggerred');
+    setTransactionCount((prevState) => ++prevState);
+  }, [setTransactionCount]);
 
-  const contextValue = useMemo(() => ({ db, triggerChange }), [triggerChange, db]);
+  const contextValue = useMemo(
+    () => ({
+      db,
+      triggerUpdate,
+      transactionCount,
+      keepLastReadResults: config.keepLastReadResults,
+    }),
+    [triggerUpdate, db, transactionCount, config],
+  );
 
   useEffect(() => {
     openDB(name || 'ReactiveDB', version || 1, config)

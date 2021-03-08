@@ -22,9 +22,11 @@ export function createPromiseWithOutsideResolvers<Value, Reason>(): [
   return [promise, outsideResolve, outsideReject];
 }
 
+type ComparableObjectType = Record<string, unknown> | Record<string, unknown>[] | null;
+
 export function compareStringifiedObjects(
-  a: Record<string, unknown> | null,
-  b: Record<string, unknown> | null,
+  a: ComparableObjectType,
+  b: ComparableObjectType,
 ): boolean {
   return JSON.stringify(a) === JSON.stringify(b);
 }

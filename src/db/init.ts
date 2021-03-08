@@ -19,6 +19,7 @@ interface ObjectStoreParams {
 
 export type DBConfig = {
   objectStores: ObjectStoreParams[];
+  keepLastReadResults?: boolean;
 };
 
 export const openDB = (
