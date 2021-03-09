@@ -17,15 +17,16 @@ interface ObjectStoreParams {
   data: unknown[];
 }
 
-export type DBConfig = {
+export type Config = {
   objectStores: ObjectStoreParams[];
   keepLastReadResults?: boolean;
+  onOpen?: () => void;
 };
 
 export const openDB = (
   name: string,
   version: number,
-  config: DBConfig,
+  config: Config,
 ): Promise<IDBDatabase> => {
   const DBOpenRequest = window.indexedDB.open(name, version);
 

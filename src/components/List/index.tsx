@@ -1,6 +1,5 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
-import useRead from '../../db/hooks/use-read';
 import { useItems } from '../../store/items';
 import BareList from '../../styles/BareList';
 import ListItem from './ListItem';
@@ -20,9 +19,6 @@ const List: React.FC = () => {
   const handleItemSwipeEnd = useCallback(() => {
     containerElement.current?.removeEventListener('touchmove', preventDocumentScroll);
   }, [containerElement, preventDocumentScroll]);
-
-  const DBItems = useRead('items');
-  console.log(DBItems);
 
   return (
     <UList ref={containerElement}>

@@ -5,6 +5,7 @@ import { BiPlus } from 'react-icons/bi';
 import { BiMenuAltLeft } from 'react-icons/bi';
 import { useItems } from '../../store/items';
 import useLayout from '../../store/layout';
+import { newItemNamePlaceholder } from '../../model/item';
 
 const Header: React.FC = () => {
   const { addItem } = useItems();
@@ -16,7 +17,7 @@ const Header: React.FC = () => {
         <MenuIcon />
       </Button>
       <Title>notes</Title>
-      <Button onClick={(): void => addItem('')}>
+      <Button onClick={(): void => addItem(newItemNamePlaceholder)}>
         <AddItemIcon />
       </Button>
     </Wrapper>

@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { openDB, DBConfig } from './init';
+import { openDB, Config } from './init';
+import Store from './store';
 
-type Props = { name?: string; version?: number; config: DBConfig };
+type Props = { name?: string; version?: number; config: Config };
 
 export type Context = {
   db: IDBDatabase | null;
-  triggerUpdate: () => void;
-  transactionCount: number;
+  triggerUpdate: (storeName: string) => void;
+  transactionCountStore: Record<string, number>;
   keepLastReadResults?: boolean;
 };
 
@@ -16,32 +17,61 @@ DBContext.displayName = 'ReactiveDBContext';
 const IndexedDBProvider: React.FC<Props> = (props) => {
   const { name, version, config } = props;
   const [db, setDB] = useState<IDBDatabase | null>(null);
-  const [transactionCount, setTransactionCount] = useState(0);
+  const [transactionCountStore, setTransactionCount] = useState(
+    createTransactionStore(config),
+  );
 
-  const triggerUpdate = useCallback(() => {
-    console.log('update triggerred');
-    setTransactionCount((prevState) => ++prevState);
-  }, [setTransactionCount]);
+  const triggerUpdate = useCallback(
+    (storeName: string) => {
+      console.log('update triggerred on ' + storeName);
+      setTransactionCount((prevState) =>
+        incrementStoreTransactionCount(prevState, storeName),
+      );
+    },
+    [setTransactionCount],
+  );
 
   const contextValue = useMemo(
     () => ({
       db,
       triggerUpdate,
-      transactionCount,
+      transactionCountStore,
       keepLastReadResults: config.keepLastReadResults,
     }),
-    [triggerUpdate, db, transactionCount, config],
+    [triggerUpdate, db, transactionCountStore, config],
+  );
+
+  const onOpen = useCallback(
+    (db: IDBDatabase) => {
+      Store.setDB(db);
+      config.onOpen && config.onOpen();
+      setDB(db);
+    },
+    [config, setDB],
   );
 
   useEffect(() => {
     openDB(name || 'ReactiveDB', version || 1, config)
-      .then((result) => {
-        setDB(result);
-      })
+      .then((result) => onOpen(result))
       .catch((error) => console.log(error));
-  }, [name, version, config]);
+  }, [name, version, config, onOpen]);
 
   return <DBContext.Provider value={contextValue}>{props.children}</DBContext.Provider>;
 };
 
 export default IndexedDBProvider;
+
+function createTransactionStore(config: Config): Record<string, number> {
+  const store: ReturnType<typeof createTransactionStore> = {};
+  config.objectStores.forEach(({ name }) => (store[name] = 0));
+  return store;
+}
+
+function incrementStoreTransactionCount(
+  prevState: Record<string, number>,
+  storeName: string,
+): Record<string, number> {
+  const newState = { ...prevState };
+  newState[storeName] = ++prevState[storeName];
+  return newState;
+}

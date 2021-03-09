@@ -1,13 +1,12 @@
-import create from 'zustand';
-import Item, { discardItem, filterPlaceholderItems } from '../model/item';
-import { createItem } from './items';
+import create, { PartialState } from 'zustand';
+import DBItem, { DBItemInput, discardItem, filterPlaceholderItems } from '../model/item';
 
 export type ItemsStore = {
-  items: Item[];
-  addItem: (name: string) => void;
-  removeItem: (id: number) => void;
-  updateItem: (newName: string, id: number) => void;
-  setItems: (newItems: Item[]) => void;
+  items: DBItem[];
+  _addItem: (item: DBItem) => void;
+  deleteItem: (id: number) => void;
+  updateItem: (item: DBItemInput | DBItem) => void;
+  setItems: (newItems: DBItem[]) => void;
   _lastItemId: number;
 };
 
@@ -18,49 +17,13 @@ export type LayoutStore = {
 
 export type Store = ItemsStore & LayoutStore;
 
-const initItems: Item[] = [
-  { name: 'potatoes', id: 0 },
-  { name: 'ham', id: 1 },
-  { name: 'Milk', id: 2 },
-];
-
 const useStore = create<Store>((set) => ({
-  items: initItems,
-  _lastItemId: 2,
-  addItem: (name: string): void => {
-    set((state) => {
-      const newItem = createItem(name, state);
-      return {
-        items: [newItem].concat(filterPlaceholderItems(state.items)),
-        _lastItemId: newItem.id,
-      };
-    });
-  },
-  updateItem: (newName: string, id: number): void => {
-    set((state) => {
-      const newItems = filterPlaceholderItems(state.items);
-      const item = newItems.find((item) => item.id === id);
-      if (!item) {
-        return state;
-      } else {
-        item.name = newName;
-        return { items: [...newItems] };
-      }
-    });
-  },
-  removeItem: (id: number): void => {
-    set((state) => {
-      const newItems = filterPlaceholderItems(state.items).map((item) => {
-        if (item.id !== id) {
-          return item;
-        } else {
-          return discardItem(item);
-        }
-      });
-      return { items: newItems };
-    });
-  },
-  setItems: (newItems: Item[]): void => set(() => ({ items: newItems })),
+  items: [],
+  _lastItemId: 0,
+  _addItem: (item: DBItem): void => addItem(set, item),
+  updateItem: (item: DBItemInput | DBItem): void => updateItem(set, item),
+  deleteItem: (id: number): void => deleteItem(set, id),
+  setItems: (newItems: DBItem[]): void => set(() => ({ items: newItems })),
   isSidenavHidden: true,
   toggleIsSidenavHidden: (): void =>
     set((state) => ({
@@ -69,3 +32,48 @@ const useStore = create<Store>((set) => ({
 }));
 
 export default useStore;
+
+type StoreSetter = (partial: PartialState<Store>, replace?: boolean) => void;
+
+function addItem(set: StoreSetter, item: DBItem): void {
+  set((state) => {
+    return {
+      items: [item].concat(filterPlaceholderItems(state.items)),
+      _lastItemId: item.id,
+    };
+  });
+}
+
+function updateItem(set: StoreSetter, updateItem: DBItemInput | DBItem): void {
+  set((state) => {
+    const { name, id } = updateItem;
+    const newItems = filterPlaceholderItems(state.items);
+    const item = newItems.find((item) => item.id === id);
+    if (!item) {
+      return state;
+    } else {
+      item.name = name;
+      return { items: [...newItems] };
+    }
+  });
+}
+
+function deleteItem(set: StoreSetter, id: number): void {
+  set((state) => {
+    const newItems = filterPlaceholderItems(state.items).map((item) => {
+      if (item.id !== id) {
+        return item;
+      } else {
+        return discardItem(item);
+      }
+    });
+    return { items: newItems };
+  });
+}
+
+export function loadItems(items: DBItem[]): void {
+  let maxId = 0;
+  items.forEach(({ id }) => (maxId = id * +(id > maxId)));
+  useStore.getState()._lastItemId = maxId;
+  useStore.getState().setItems(items);
+}

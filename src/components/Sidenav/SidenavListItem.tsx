@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import styled from 'styled-components';
-import DBList, { newListNamePlaceholder } from '../../model/list';
+import { DBList, newListNamePlaceholder } from '../../model/list';
 import { useLists } from '../../store/items';
 import BareButton from '../../styles/BareButton';
 import DropDownMenu from '../DropDownMenu';
@@ -11,23 +11,22 @@ type Props = { list: DBList };
 const SidenavListItem: React.FC<Props> = ({ list }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRenameActive, setIsRenameActive] = useState(false);
-  const { addListToCurrent, deleteList: _deleteList } = useLists();
+  const { addListToCurrent, updateList, deleteList } = useLists();
 
   const hideListMenu = useCallback(() => setIsMenuOpen(false), [setIsMenuOpen]);
-  const deleteList = useCallback(() => _deleteList(list.id), [list, _deleteList]);
 
   const nameInputElement = useRef<HTMLInputElement>(null);
 
   const renameList = useCallback(() => {
-    const newName = nameInputElement.current?.value;
+    const newName = nameInputElement.current?.value || '';
 
     if (newName === '') {
       setIsRenameActive(false);
       return;
     }
-    // todo rename list
+    updateList({ ...list, name: newName });
     setIsRenameActive(false);
-  }, [setIsRenameActive]);
+  }, [setIsRenameActive, list, updateList]);
 
   // weird workaround to handle ios safari keyboard done button
   const submitRenameForm = useCallback(
@@ -66,7 +65,9 @@ const SidenavListItem: React.FC<Props> = ({ list }) => {
           <ListMenuButton onClick={(): void => setIsRenameActive(true)}>
             Rename
           </ListMenuButton>
-          <ListMenuButton onClick={deleteList}>Delete</ListMenuButton>
+          <ListMenuButton onClick={(): void => deleteList(list.id)}>
+            Delete
+          </ListMenuButton>
         </DropDownMenu>
       )}
     </Wrapper>

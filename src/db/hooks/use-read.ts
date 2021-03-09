@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { DBRecord } from '../model';
+import { asyncRead } from '../operators';
 import { compareStringifiedObjects } from '../utils';
 import useDB from './use-db';
 
@@ -21,7 +22,8 @@ function useRead<T extends DBRecord | DBRecord[]>(
   storeName: string,
   params?: Params,
 ): T | null {
-  const { db, transactionCount, keepLastReadResults } = useDB();
+  const { db, transactionCountStore, keepLastReadResults } = useDB();
+  const transactionCount = transactionCountStore[storeName];
   const [lastResult, setLastResult] = useState<ReadResult<T | null>>(
     createReadResult(null, transactionCount),
   );
@@ -35,22 +37,19 @@ function useRead<T extends DBRecord | DBRecord[]>(
     lastResult.value = null;
   }
 
-  const transaction = db.transaction(storeName, 'readonly');
-  const objectStore = transaction.objectStore(storeName);
-
-  transaction.onerror = (event: Event): void => {
-    console.log(event.type);
-  };
-
-  const request = params?.key ? objectStore.get(params.key) : objectStore.getAll();
-
-  request.onsuccess = (_: Event): void => {
+  function onSuccess(request: IDBRequest, _: Event): void {
     if (!compareStringifiedObjects(request.result, lastResult.value)) {
       const newResult = createReadResult(request.result, transactionCount);
 
       setLastResult(newResult);
     }
-  };
+  }
+
+  function onError(event: Event): void {
+    console.log(event.type);
+  }
+
+  asyncRead(storeName, { key: params?.key, db, onSuccess, onError });
 
   return lastResult.value;
 }

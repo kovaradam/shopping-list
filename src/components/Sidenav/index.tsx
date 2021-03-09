@@ -1,22 +1,30 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import useLayout from '../../store/layout';
 import { FiChevronLeft, FiDelete, FiFolderPlus } from 'react-icons/fi';
 import useOnClickOutside from '../../hooks/on-click-outside';
 import Overlay from '../Overlay';
 import SidenavButton from './SidenavButton';
-import { useItems } from '../../store/items';
+import { useItems, useLists } from '../../store/items';
 import SidenavList from './SidenavList';
+import { newListNamePlaceholder } from '../../model/list';
 
 const Sidenav: React.FC = () => {
   const { isSidenavHidden, toggleIsSidenavHidden } = useLayout();
-  const { deleteCurrentList } = useItems();
+  const [isListHidden, setIsListHiddden] = useState(true);
+  const { deleteCurrentList, items } = useItems();
+  const { updateList } = useLists();
   const ref = useRef(null);
   const hide = useCallback(() => !isSidenavHidden && toggleIsSidenavHidden(), [
     isSidenavHidden,
     toggleIsSidenavHidden,
   ]);
   useOnClickOutside(ref, hide);
+
+  const saveCurrentList = useCallback(() => {
+    updateList({ name: newListNamePlaceholder, items });
+    setIsListHiddden(false);
+  }, [items, updateList]);
 
   return (
     <>
@@ -26,13 +34,13 @@ const Sidenav: React.FC = () => {
           <HideIcon />
         </Header>
         <ContentWrapper>
-          <SidenavButton Icon={SaveIcon} onClick={(): void => console.log('saved')}>
+          <SidenavButton Icon={SaveIcon} onClick={saveCurrentList}>
             Save list
           </SidenavButton>
           <SidenavButton Icon={ClearIcon} onClick={deleteCurrentList}>
             Delete items
           </SidenavButton>
-          <SidenavList />
+          <SidenavList isHidden={isListHidden} setIsHiddden={setIsListHiddden} />
         </ContentWrapper>
       </Wrapper>
     </>
