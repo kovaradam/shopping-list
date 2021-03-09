@@ -1,40 +1,43 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
-import Item from '../../model/item';
+import DBItem, { newItemNamePlaceholder } from '../../model/item';
 import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
-import useUpdate from '../../db/hooks/use-update';
 
 type Props = {
   isDisabled?: boolean;
   onSwipeStart?: () => void;
   onSwipeEnd?: () => void;
   onSwipeLeft?: () => void;
-} & Item;
+} & DBItem;
 
 const ListItem: React.FC<Props> = (props) => {
-  const { name, id } = props;
+  const { id } = props;
   const [volume, setVolume] = useState('1');
   const [units, setUnits] = useState('x');
-  const { updateItem, removeItem } = useItems();
+  const [name, setName] = useState(props.name);
+  const { updateItem, deleteItem } = useItems();
   const nameInput = useRef<HTMLInputElement>(null);
+
   const handleSwipeLeft = useCallback((): void => {
-    removeItem(id);
-  }, [id, removeItem]);
+    deleteItem(id);
+  }, [id, deleteItem]);
 
   useEffect(() => {
     const current = nameInput.current;
-    if (name === '' && current) {
+    if (name === newItemNamePlaceholder && current) {
       current.focus();
     }
   }, [name]);
 
-  const update = useUpdate();
-
-  const updateDBItem = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    update('items', { value: { name: 'Bananas' } });
+    const newName = name;
+    if (newName !== '') {
+      updateItem({ name: newName, id });
+    }
+    nameInput.current?.blur();
   };
 
   if (props.isDiscarded) {
@@ -49,13 +52,13 @@ const ListItem: React.FC<Props> = (props) => {
     >
       <Container>
         <ItemWrapper>
-          <form onSubmit={updateDBItem}>
+          <form onSubmit={handleFormSubmit}>
             <NameInput
               tabIndex={id}
               ref={nameInput}
               value={name}
               disabled={props.isDiscarded}
-              onChange={(event): void => updateItem(event.target.value, id)}
+              onChange={(event): void => setName(event.target.value)}
             />
           </form>
           <InputWrapper>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FiFolder, FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
 import useRead from '../../db/hooks/use-read';
@@ -6,21 +6,25 @@ import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';
 import SidenavButton from './SidenavButton';
 import SidenavListItem from './SidenavListItem';
-import DBList from '../../model/list';
+import { DBList } from '../../model/list';
 
-const SidenavList: React.FC = () => {
-  const [isHidden, setIsHiddden] = useState(true);
+type Props = {
+  isHidden: boolean;
+  setIsHiddden: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
+const SidenavList: React.FC<Props> = ({ isHidden, setIsHiddden }) => {
   const lists = useRead<DBList>('lists');
+
+  const toggleIsHidden = useCallback((): void => {
+    setIsHiddden((isHidden) => !isHidden);
+  }, [setIsHiddden]);
 
   return (
     <Wrapper isHidden={isHidden}>
       {!isHidden && <Marker />}
       <Header>
-        <SidenavButton
-          Icon={ListsIcon}
-          onClick={(): void => setIsHiddden((isHidden) => !isHidden)}
-        >
+        <SidenavButton Icon={ListsIcon} onClick={toggleIsHidden}>
           Lists
           <ListButtonIconWrapper isHidden={isHidden}>
             <ListButtonIcon />

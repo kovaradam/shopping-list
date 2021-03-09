@@ -1,12 +1,13 @@
-import Item from './item';
+import { DBRecord } from '../db/model';
+import DBItem from './item';
 
-type DBList = {
+export interface DBListInput extends DBRecord {
   name: string;
+  items: DBItem[];
+}
+export interface DBList extends DBListInput {
   id: number;
-  items: Item[];
-};
-
-export default DBList;
+}
 
 export const initLists: DBList[] = [
   {

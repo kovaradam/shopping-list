@@ -1,16 +1,29 @@
-interface Item {
+import { DBRecord } from '../db/model';
+
+export interface DBItemInput extends DBRecord {
   name: string;
-  id: number;
   isDiscarded?: boolean;
 }
 
-export default Item;
+interface DBItem extends DBItemInput {
+  id: number;
+}
 
-export const filterPlaceholderItems = (items: Item[]): Item[] => {
+export default DBItem;
+
+export const filterPlaceholderItems = (items: DBItem[]): DBItem[] => {
   return items.filter((item) => !item.isDiscarded);
 };
 
-export const discardItem = (item: Item): Item => {
+export const discardItem = (item: DBItem): DBItem => {
   item.isDiscarded = true;
   return item;
 };
+
+export const newItemNamePlaceholder = '';
+
+export const initItems: DBItem[] = [
+  { name: 'potatoes', id: 0 },
+  { name: 'ham', id: 1 },
+  { name: 'Milk', id: 2 },
+];
