@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { FiFolder, FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
 import useRead from '../../db/hooks/use-read';
