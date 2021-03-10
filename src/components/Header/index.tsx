@@ -9,11 +9,15 @@ import { newItemNamePlaceholder } from '../../model/item';
 
 const Header: React.FC = () => {
   const { addItem } = useItems();
-  const { toggleIsSidenavHidden } = useLayout();
+  const { toggleIsSidenavHidden, isSidenavHidden } = useLayout();
 
   return (
     <Wrapper>
-      <Button onClick={toggleIsSidenavHidden}>
+      <Button
+        onClick={(): void => {
+          isSidenavHidden && toggleIsSidenavHidden();
+        }}
+      >
         <MenuIcon />
       </Button>
       <Title>notes</Title>
@@ -28,6 +32,7 @@ export default Header;
 
 const Wrapper = styled.header`
   position: fixed;
+  top: 0;
   background-color: black;
   width: 100vw;
   height: var(--header-height);
@@ -35,7 +40,7 @@ const Wrapper = styled.header`
   align-items: center;
   justify-content: space-between;
   color: white;
-  z-index: 1;
+  z-index: 3;
 `;
 
 const Title = styled.h1`
@@ -44,7 +49,7 @@ const Title = styled.h1`
   text-justify: center;
   color: inherit;
   font-weight: 200;
-  font-size: 1.5rem;
+  font-size: var(--header-font-size);
   margin: 0;
   padding: 0;
 `;

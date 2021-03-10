@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import styled from 'styled-components';
 import { DBList, newListNamePlaceholder } from '../../model/list';
-import { useLists } from '../../store/items';
+import { useItems, useLists } from '../../store/items';
 import BareButton from '../../styles/BareButton';
 import DropDownMenu from '../DropDownMenu';
 
@@ -11,7 +11,8 @@ type Props = { list: DBList };
 const SidenavListItem: React.FC<Props> = ({ list }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isRenameActive, setIsRenameActive] = useState(false);
-  const { addListToCurrent, updateList, deleteList } = useLists();
+  const { updateList, deleteList } = useLists();
+  const { addItems } = useItems();
 
   const hideListMenu = useCallback(() => setIsMenuOpen(false), [setIsMenuOpen]);
 
@@ -52,9 +53,7 @@ const SidenavListItem: React.FC<Props> = ({ list }) => {
       </ListNameForm>
       {!isRenameActive && (
         <>
-          <ItemButton onClick={(): void => addListToCurrent(list)}>
-            {list.name}
-          </ItemButton>
+          <ItemButton onClick={(): void => addItems(list.items)}>{list.name}</ItemButton>
           <ItemMenuButton onClick={(): void => setIsMenuOpen(true)}>
             <ItemMenuIcon />
           </ItemMenuButton>

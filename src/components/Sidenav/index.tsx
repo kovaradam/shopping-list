@@ -31,6 +31,7 @@ const Sidenav: React.FC = () => {
       <Overlay isHidden={isSidenavHidden} />
       <Wrapper ref={ref} isHidden={isSidenavHidden}>
         <Header onClick={hide}>
+          Lists
           <HideIcon />
         </Header>
         <ContentWrapper>
@@ -52,12 +53,12 @@ export default Sidenav;
 const Wrapper = styled.aside<{ isHidden: boolean }>`
   height: 100%;
   position: fixed;
+  top: 0;
   width: 65vw;
   background-color: white;
   z-index: 2;
   transform: translateX(${(props): string => (props.isHidden ? '-105%' : '0%')});
   transition: transform 170ms ease-in;
-  box-shadow: 0px 0px 15px -1px rgb(0 0 0 / 49%);
   display: flex;
   flex-direction: column;
 `;
@@ -67,14 +68,16 @@ const Header = styled.header`
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding: 15px 10px;
+  justify-content: space-between;
+  padding: 15px 16px;
+  padding-right: 10px;
   box-sizing: border-box;
+  font-size: var(--header-font-size);
+  color: var(--sidenav-action-color);
 `;
 
 const HideIcon = styled(FiChevronLeft)`
   font-size: 2rem;
-  color: var(--sidenav-action-color);
 `;
 
 const ContentWrapper = styled.div`
@@ -82,6 +85,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: min-content;
+  padding-top: 13px;
 `;
 
 const SaveIcon = styled(FiFolderPlus)``;

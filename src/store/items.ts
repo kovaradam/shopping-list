@@ -4,7 +4,7 @@ import useUpdate from '../db/hooks/use-update';
 import { StoreNames } from '../config';
 import DBItem, { DBItemInput } from '../model/item';
 import { DBList, DBListInput } from '../model/list';
-import useRead from '../db/hooks/use-read';
+import { update } from '../db/operators';
 
 const itemsSelector = (state: Store): ItemsStore => {
   return {
@@ -20,38 +20,50 @@ const itemsSelector = (state: Store): ItemsStore => {
 interface UseItemsReturnType extends ItemsStore {
   deleteCurrentList: () => void;
   addItem: (name: string) => void;
+  addItems: (items: DBItemInput[]) => void;
 }
 
 export const useItems = (): UseItemsReturnType => {
   const viewStore = useStore(itemsSelector);
-  const update = useUpdate();
   const updateItem = useCallback(
     (item: DBItemInput) => {
       viewStore.updateItem(item);
       update(StoreNames.ITEMS, { value: item });
     },
-    [update, viewStore],
+    [viewStore],
   );
   const addItem = useCallback(
     (name: string) => {
       const item = createItem(name, viewStore);
-      viewStore._lastItemId = item.id;
-      viewStore._addItem(item);
+      addItemToViewStore(item, viewStore);
       update(StoreNames.ITEMS, { value: item });
     },
-    [viewStore, update],
+    [viewStore],
+  );
+  const addItems = useCallback(
+    (items: DBItemInput[]) => {
+      items.forEach(({ name }) => {
+        const item = createItem(name, viewStore);
+        addItemToViewStore(item, viewStore);
+      });
+      update(
+        StoreNames.ITEMS,
+        items.map((item) => ({ value: item })),
+      );
+    },
+    [viewStore],
   );
   const deleteCurrentList = useCallback(() => {
     viewStore.setItems([]);
     update(StoreNames.ITEMS, { value: null, key: IDBKeyRange.lowerBound(0) });
-  }, [update, viewStore]);
+  }, [viewStore]);
 
   const deleteItem = useCallback(
     (id: number) => {
       viewStore.deleteItem(id);
       update(StoreNames.ITEMS, { value: null, key: id });
     },
-    [update, viewStore],
+    [viewStore],
   );
 
   return {
@@ -60,24 +72,17 @@ export const useItems = (): UseItemsReturnType => {
     updateItem,
     addItem,
     deleteItem,
+    addItems,
   };
 };
 
 type UseListsReturnType = {
-  lists: DBList[] | null;
-  addListToCurrent: (list: DBList) => void;
   deleteList: (id: number) => void;
   updateList: (list: DBList | DBListInput) => void;
 };
 
 export const useLists = (): UseListsReturnType => {
   const update = useUpdate();
-  const lists = useRead<DBList[]>(StoreNames.LISTS, { keepResults: true });
-  const { addItem } = useItems();
-  const addListToCurrent = useCallback(
-    (list: DBList) => list.items.forEach((item) => addItem(item.name)),
-    [addItem],
-  );
 
   const updateList = useCallback(
     (list: DBList | DBListInput) => update('lists', { value: list }),
@@ -89,9 +94,14 @@ export const useLists = (): UseListsReturnType => {
     [update],
   );
 
-  return { lists, addListToCurrent, deleteList, updateList };
+  return { deleteList, updateList };
 };
 
-export const createItem = (name: string, state: ItemsStore): DBItem => {
+function createItem(name: string, state: ItemsStore): DBItem {
   return { name, id: state._lastItemId + 1 };
-};
+}
+
+function addItemToViewStore(item: DBItem, state: ItemsStore): void {
+  state._lastItemId = item.id;
+  state._addItem(item);
+}
