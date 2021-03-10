@@ -37,4 +37,4 @@ export const initLists: DBList[] = [
   },
 ];
 
-export const newListNamePlaceholder = '';
+export const newListNamePlaceholder = 'bThi8k8HKo6w6T';

@@ -73,7 +73,7 @@ function deleteItem(set: StoreSetter, id: number): void {
 
 export function loadItems(items: DBItem[]): void {
   let maxId = 0;
-  items.forEach(({ id }) => (maxId = id * +(id > maxId)));
+  items.forEach(({ id }) => (maxId = id > maxId ? id : maxId));
   useStore.getState()._lastItemId = maxId;
   useStore.getState().setItems(items);
 }

@@ -1,5 +1,5 @@
 import useDB from './use-db';
-import { asyncUpdate } from '../operators';
+import { asyncUpdate } from '../operators/update';
 import { UpdateData } from '../model';
 
 function useUpdate(): typeof update {

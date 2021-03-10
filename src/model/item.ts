@@ -20,7 +20,7 @@ export const discardItem = (item: DBItem): DBItem => {
   return item;
 };
 
-export const newItemNamePlaceholder = '';
+export const newItemNamePlaceholder = '5Ft3zDa3bsQKQD';
 
 export const initItems: DBItem[] = [
   { name: 'potatoes', id: 0 },

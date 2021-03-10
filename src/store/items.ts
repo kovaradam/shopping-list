@@ -4,7 +4,7 @@ import useUpdate from '../db/hooks/use-update';
 import { StoreNames } from '../config';
 import DBItem, { DBItemInput } from '../model/item';
 import { DBList, DBListInput } from '../model/list';
-import { update } from '../db/operators';
+import { update } from '../db/operators/update';
 
 const itemsSelector = (state: Store): ItemsStore => {
   return {

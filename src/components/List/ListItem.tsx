@@ -13,32 +13,36 @@ type Props = {
 } & DBItem;
 
 const ListItem: React.FC<Props> = (props) => {
-  const { id } = props;
+  const { id, name } = props;
   const [volume, setVolume] = useState('1');
   const [units, setUnits] = useState('x');
-  const [name, setName] = useState(props.name);
   const { updateItem, deleteItem } = useItems();
-  const nameInput = useRef<HTMLInputElement>(null);
+  const nameInputElement = useRef<HTMLInputElement>(null);
 
   const handleSwipeLeft = useCallback((): void => {
     deleteItem(id);
   }, [id, deleteItem]);
 
   useEffect(() => {
-    const current = nameInput.current;
-    if (name === newItemNamePlaceholder && current) {
-      current.focus();
+    const currentElement = nameInputElement.current;
+    if (!currentElement) return;
+    if (name === newItemNamePlaceholder && currentElement) {
+      currentElement.value = '';
+      currentElement.focus();
+    } else {
+      currentElement.value = name;
     }
   }, [name]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    const newName = name;
-    if (newName !== '') {
-      updateItem({ name: newName, id });
-    }
-    nameInput.current?.blur();
+    nameInputElement.current?.blur();
   };
+
+  const handleUpdate = useCallback(() => {
+    const newName = nameInputElement.current?.value || '';
+    updateItem({ name: newName, id, volume });
+  }, [nameInputElement, id, volume, updateItem]);
 
   if (props.isDiscarded) {
     return <DeletePlaceholder />;
@@ -55,10 +59,11 @@ const ListItem: React.FC<Props> = (props) => {
           <form onSubmit={handleFormSubmit}>
             <NameInput
               tabIndex={id}
-              ref={nameInput}
-              value={name}
+              ref={nameInputElement}
+              // value={name}
               disabled={props.isDiscarded}
-              onChange={(event): void => setName(event.target.value)}
+              onBlur={handleUpdate}
+              // onChange={(event): void => setName(event.target.value)}
             />
           </form>
           <InputWrapper>
