@@ -72,7 +72,7 @@ type UseListsReturnType = {
 
 export const useLists = (): UseListsReturnType => {
   const update = useUpdate();
-  const lists = useRead<DBList>(StoreNames.LISTS, { keepResults: true });
+  const lists = useRead<DBList[]>(StoreNames.LISTS, { keepResults: true });
   const { addItem } = useItems();
   const addListToCurrent = useCallback(
     (list: DBList) => list.items.forEach((item) => addItem(item.name)),
