@@ -4,6 +4,7 @@ import useUpdate from '../db/hooks/use-update';
 import { StoreNames } from '../config';
 import DBItem, { DBItemInput } from '../model/item';
 import { DBList, DBListInput } from '../model/list';
+import useRead from '../db/hooks/use-read';
 
 const itemsSelector = (state: Store): ItemsStore => {
   return {
@@ -63,6 +64,7 @@ export const useItems = (): UseItemsReturnType => {
 };
 
 type UseListsReturnType = {
+  lists: DBList[] | null;
   addListToCurrent: (list: DBList) => void;
   deleteList: (id: number) => void;
   updateList: (list: DBList | DBListInput) => void;
@@ -70,6 +72,7 @@ type UseListsReturnType = {
 
 export const useLists = (): UseListsReturnType => {
   const update = useUpdate();
+  const lists = useRead<DBList>(StoreNames.LISTS, { keepResults: true });
   const { addItem } = useItems();
   const addListToCurrent = useCallback(
     (list: DBList) => list.items.forEach((item) => addItem(item.name)),
@@ -86,7 +89,7 @@ export const useLists = (): UseListsReturnType => {
     [update],
   );
 
-  return { addListToCurrent, deleteList, updateList };
+  return { lists, addListToCurrent, deleteList, updateList };
 };
 
 export const createItem = (name: string, state: ItemsStore): DBItem => {

@@ -1,12 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { FiFolder, FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
-import useRead from '../../db/hooks/use-read';
+import { useLists } from '../../store/items';
 import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';
 import SidenavButton from './SidenavButton';
 import SidenavListItem from './SidenavListItem';
-import { DBList } from '../../model/list';
 
 type Props = {
   isHidden: boolean;
@@ -14,13 +13,11 @@ type Props = {
 };
 
 const SidenavList: React.FC<Props> = ({ isHidden, setIsHiddden }) => {
-  const lists = useRead<DBList>('lists');
+  const { lists } = useLists();
 
   const toggleIsHidden = useCallback((): void => {
     setIsHiddden((isHidden) => !isHidden);
   }, [setIsHiddden]);
-
-  const lists = useRead<DBList>('lists');
 
   return (
     <Wrapper isHidden={isHidden}>
