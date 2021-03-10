@@ -77,7 +77,7 @@ export default SidenavListItem;
 
 const Wrapper = styled.li`
   position: relative;
-  padding: 0 4px;
+  padding: 0;
   font-size: 0.9rem;
   display: flex;
   justify-content: space-between;
@@ -87,8 +87,17 @@ const Wrapper = styled.li`
 
 const ItemButton = styled(BareButton)`
   font-size: inherit;
-  padding: 0 15px;
+  padding: 0 18px;
   color: var(--sidenav-color);
+  width: 75%;
+  text-align: left;
+`;
+
+const ItemMenuButton = styled(ItemButton)`
+  width: 25%;
+  color: #b8b7b7;
+  text-align: center;
+  padding-left: 15px;
 `;
 
 const ListNameForm = styled.form<{ isHidden: boolean }>`
@@ -105,10 +114,6 @@ const ListNameInput = styled.input`
   height: 1.4rem;
   font-size: 1rem;
   width: 100%;
-`;
-
-const ItemMenuButton = styled(ItemButton)`
-  color: #b8b7b7;
 `;
 
 const ItemMenuIcon = styled(FiMoreVertical)``;
