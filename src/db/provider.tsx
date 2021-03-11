@@ -14,6 +14,9 @@ export type Context = {
 export const DBContext = React.createContext<Context | null>(null);
 DBContext.displayName = 'ReactiveDBContext';
 
+const defaultName = 'ReactiveDB';
+const defaultVersion = 1;
+
 const IndexedDBProvider: React.FC<Props> = (props) => {
   const { name, version, config } = props;
   const [db, setDB] = useState<IDBDatabase | null>(null);
@@ -23,7 +26,6 @@ const IndexedDBProvider: React.FC<Props> = (props) => {
 
   const triggerUpdate = useCallback(
     (storeName: string) => {
-      console.log('update triggerred on ' + storeName);
       setTransactionCount((prevState) =>
         incrementStoreTransactionCount(prevState, storeName),
       );
@@ -48,11 +50,11 @@ const IndexedDBProvider: React.FC<Props> = (props) => {
       config.onOpen && config.onOpen();
       setDB(db);
     },
-    [config, setDB],
+    [config, setDB, triggerUpdate],
   );
 
   useEffect(() => {
-    openDB(name || 'ReactiveDB', version || 1, config)
+    openDB(name || defaultName, version || defaultVersion, config)
       .then((result) => onOpen(result))
       .catch((error) => console.log(error));
   }, [name, version, config, onOpen]);
