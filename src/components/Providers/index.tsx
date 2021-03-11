@@ -6,7 +6,9 @@ import IndexedDBProvider from '../../db/provider';
 const Providers: React.FC = ({ children }) => {
   return (
     <IconContext.Provider value={{ className: 'react-icons' }}>
-      <IndexedDBProvider config={DBConfig}>{children}</IndexedDBProvider>
+      <IndexedDBProvider config={DBConfig} version={1}>
+        {children}
+      </IndexedDBProvider>
     </IconContext.Provider>
   );
 };

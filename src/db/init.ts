@@ -61,18 +61,29 @@ export const openDB = (
       return;
     }
     const db = (event.target as IDBOpenDBRequest).result;
-    createStoresOnUpgrade(db, config.objectStores);
+
+    const newStores: ObjectStoreParams[] = [];
+    const upgradedStores: ObjectStoreParams[] = [];
+    config.objectStores.forEach((store) => {
+      if (db.objectStoreNames.contains(store.name)) {
+        upgradedStores.push(store);
+      } else {
+        newStores.push(store);
+      }
+    });
+
+    createStores(db, newStores);
+    upgradeStores(db, upgradedStores);
   };
 
   return promise;
 };
 
-function createStoresOnUpgrade(db: IDBDatabase, params: ObjectStoreParams[]): void {
+function createStores(db: IDBDatabase, params: ObjectStoreParams[]): void {
   let objectStore: IDBObjectStore;
   const writers: (() => void)[] = [];
   params.forEach(({ name, options, indexes, data }) => {
     objectStore = db.createObjectStore(name, options);
-
     // Create an indexes
     indexes?.forEach(({ name, keyPath, options }) =>
       objectStore.createIndex(name, keyPath, options),
@@ -91,5 +102,16 @@ function createStoresOnUpgrade(db: IDBDatabase, params: ObjectStoreParams[]): vo
     objectStore.transaction.oncomplete = (_: Event): void => {
       writers.forEach((write) => write());
     };
+  });
+}
+
+function upgradeStores(db: IDBDatabase, params: ObjectStoreParams[]): void {
+  params.forEach(({ name, indexes }) => {
+    const objectStore = db.transaction(name).objectStore(name);
+    // Create an indexes
+    indexes?.forEach(({ name, keyPath, options }) => {
+      objectStore.deleteIndex(name);
+      objectStore.createIndex(name, keyPath, options);
+    });
   });
 }
