@@ -8,6 +8,8 @@ interface AsyncReadParams<T> extends BaseReadParams {
   onError?: (event: Event) => void;
 }
 
+const defaultDirection = 'next';
+
 export function asyncRead<T>(storeName: string, params: AsyncReadParams<T>): void {
   const { db, onSuccess } = params;
   if (!db) {
@@ -26,7 +28,7 @@ export function asyncRead<T>(storeName: string, params: AsyncReadParams<T>): voi
   } else {
     const result: T[] = [];
     const keyRange = params.keyRange || null;
-    const direction = params.direction || 'next';
+    const direction = params.direction || defaultDirection;
     const request = objectStore.openCursor(keyRange, direction);
     request.onsuccess = (event: Event): void => {
       const cursor = (event.target as IDBRequest)?.result;
@@ -43,14 +45,21 @@ export function asyncRead<T>(storeName: string, params: AsyncReadParams<T>): voi
   };
 }
 
-export function read<T>(storeName: string, params?: BaseReadParams): Promise<T> {
+interface ReadParams<T> extends BaseReadParams {
+  triggerUpdate?: boolean;
+}
+
+export default function read<T>(storeName: string, params?: ReadParams<T>): Promise<T> {
   const [promise, resolve, reject] = createPromiseWithOutsideResolvers<T, string>();
+
   function onSuccess(result: T, _: Event): void {
     resolve(result);
   }
+
   function onError(event: Event): void {
     reject(event.type);
   }
+
   asyncRead(storeName, { ...params, db: Store.getDB(), onSuccess, onError });
   return promise;
 }

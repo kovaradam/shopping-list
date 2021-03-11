@@ -1,5 +1,5 @@
 import { Config } from './db/init';
-import { read } from './db/operators/read';
+import { read } from './db';
 import { initItems } from './model/item';
 import { initLists } from './model/list';
 import { loadItems } from './store';

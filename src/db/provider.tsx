@@ -44,6 +44,7 @@ const IndexedDBProvider: React.FC<Props> = (props) => {
   const onOpen = useCallback(
     (db: IDBDatabase) => {
       Store.setDB(db);
+      Store.setTriggerUpdate(triggerUpdate);
       config.onOpen && config.onOpen();
       setDB(db);
     },

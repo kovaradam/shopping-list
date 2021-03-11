@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { FiFolder, FiChevronDown } from 'react-icons/fi';
 import styled from 'styled-components';
 import { StoreNames } from '../../config';
-import useRead from '../../db/hooks/use-read';
+import { useRead } from '../../db';
 import { DBList } from '../../model/list';
 import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';

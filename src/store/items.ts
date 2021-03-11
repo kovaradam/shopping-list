@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 import useStore, { Store, ItemsStore } from '.';
-import useUpdate from '../db/hooks/use-update';
+import { useUpdate } from '../db';
 import { StoreNames } from '../config';
 import DBItem, { DBItemInput } from '../model/item';
 import { DBList, DBListInput } from '../model/list';
-import { update } from '../db/operators/update';
+import { update } from '../db';
 
 const itemsSelector = (state: Store): ItemsStore => {
   return {
@@ -28,7 +28,7 @@ export const useItems = (): UseItemsReturnType => {
   const updateItem = useCallback(
     (item: DBItemInput) => {
       viewStore.updateItem(item);
-      update(StoreNames.ITEMS, { value: item });
+      update(StoreNames.ITEMS, { value: item }, false);
     },
     [viewStore],
   );
@@ -36,7 +36,7 @@ export const useItems = (): UseItemsReturnType => {
     (name: string) => {
       const item = createItem(name, viewStore);
       addItemToViewStore(item, viewStore);
-      update(StoreNames.ITEMS, { value: item });
+      update(StoreNames.ITEMS, { value: item }, false);
     },
     [viewStore],
   );
@@ -49,6 +49,7 @@ export const useItems = (): UseItemsReturnType => {
       update(
         StoreNames.ITEMS,
         items.map((item) => ({ value: item })),
+        false,
       );
     },
     [viewStore],
