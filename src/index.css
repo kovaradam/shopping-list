@@ -6,11 +6,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --header-height: 11vh;
+  --header-height: 15vh;
   --sidenav-color: darkslategray;
   --sidenav-action-color: #fdcdcd;
   --header-font-size: 1.5rem;
+  --list-item-action-color: #ffee0321;
+  --header-letter-spacing: 0.7px;
 
+  background-color: white;
   position: fixed;
   top: var(--header-height);
 }

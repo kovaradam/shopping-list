@@ -132,12 +132,13 @@ const Input = styled.input`
   border-radius: 2px;
   margin: 1px;
   &:focus {
-    background-color: #ffee0321;
+    background-color: var(--list-item-action-color);
   }
 `;
 
 const VolumeInput = styled(Input)`
   text-align: end;
+  text-align: right;
   color: grey;
 `;
 

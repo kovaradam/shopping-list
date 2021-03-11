@@ -75,6 +75,7 @@ const Header = styled.header`
   box-sizing: border-box;
   font-size: var(--header-font-size);
   color: var(--sidenav-action-color);
+  letter-spacing: var(--header-letter-spacing);
 `;
 
 const HideIcon = styled(FiChevronLeft)`

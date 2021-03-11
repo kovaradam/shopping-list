@@ -34,14 +34,15 @@ const Wrapper = styled.header`
   position: fixed;
   top: 0;
   background-color: white;
-
+  font-weight: 500;
   width: 100vw;
   height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: #f89d9d;
+  color: var(--sidenav-action-color);
   z-index: 1;
+  box-shadow: 0 0 14px 0 #80808033;
 `;
 
 const Title = styled.h1`
@@ -49,16 +50,18 @@ const Title = styled.h1`
   text-align: center;
   text-justify: center;
   color: inherit;
-  font-weight: 200;
+  font-weight: 400;
   font-size: var(--header-font-size);
   margin: 0;
   padding: 0;
+  letter-spacing: var(--header-letter-spacing);
 `;
 
 const Button = styled(BareButton)`
   color: inherit;
   width: 20vw;
   height: 100%;
+  font-weight: 500;
 
   &:active {
     color: grey;
@@ -66,9 +69,9 @@ const Button = styled(BareButton)`
 `;
 
 const AddItemIcon = styled(BiPlus)`
-  font-size: 2rem;
+  font-size: 2.4rem;
 `;
 
 const MenuIcon = styled(BiMenuAltLeft)`
-  font-size: 2rem;
+  font-size: 2.4rem;
 `;
