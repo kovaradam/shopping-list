@@ -4,6 +4,7 @@ import DBItem, { newItemNamePlaceholder } from '../../model/item';
 import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
+import ListItemInput from './ListItemInput';
 
 type Props = {
   isDisabled?: boolean;
@@ -14,8 +15,8 @@ type Props = {
 
 const ListItem: React.FC<Props> = (props) => {
   const { id, name } = props;
-  const [volume, setVolume] = useState('1');
-  const [units, setUnits] = useState('x');
+  const [volume, setVolume] = useState(props.volume || 1);
+  const [units, setUnits] = useState(props.units || 'x');
   const { updateItem, deleteItem } = useItems();
   const nameInputElement = useRef<HTMLInputElement>(null);
 
@@ -25,6 +26,8 @@ const ListItem: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const currentElement = nameInputElement.current;
+    console.log(nameInputElement);
+
     if (!currentElement) return;
     if (name === newItemNamePlaceholder && currentElement) {
       currentElement.value = '';
@@ -36,13 +39,13 @@ const ListItem: React.FC<Props> = (props) => {
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    nameInputElement.current?.blur();
+    ((event.target as HTMLFormElement)[0] as HTMLInputElement).blur();
   };
 
   const handleUpdate = useCallback(() => {
     const newName = nameInputElement.current?.value || '';
-    updateItem({ name: newName, id, volume });
-  }, [nameInputElement, id, volume, updateItem]);
+    updateItem({ name: newName, id, volume, units });
+  }, [nameInputElement, id, volume, units, updateItem]);
 
   if (props.isDiscarded) {
     return <DeletePlaceholder />;
@@ -56,30 +59,32 @@ const ListItem: React.FC<Props> = (props) => {
     >
       <Container>
         <ItemWrapper>
-          <form onSubmit={handleFormSubmit}>
-            <NameInput
-              tabIndex={id}
-              ref={nameInputElement}
-              // value={name}
-              disabled={props.isDiscarded}
-              onBlur={handleUpdate}
-              // onChange={(event): void => setName(event.target.value)}
-            />
-          </form>
+          <ListItemInput
+            onSubmit={handleFormSubmit}
+            tabIndex={id}
+            inputRef={nameInputElement}
+            onBlur={handleUpdate}
+            as={NameInput}
+          />
           <InputWrapper>
-            <VolumeInput
+            <ListItemInput
+              onSubmit={handleFormSubmit}
               tabIndex={id}
-              value={volume}
-              disabled={props.isDiscarded}
-              onChange={(event): void => setVolume(event.target.value)}
+              value={isNaN(volume) ? '' : volume}
+              onChange={(event): void => setVolume(parseInt(event.target.value))}
               type="decimal"
               pattern="[0-9]*"
+              onBlur={handleUpdate}
+              as={VolumeInput}
             />
-            <UnitsInput
+            <ListItemInput
+              onSubmit={handleFormSubmit}
               tabIndex={id}
               value={units}
-              disabled={props.isDiscarded}
               onChange={(event): void => setUnits(event.target.value)}
+              onBlur={handleUpdate}
+              type=""
+              as={UnitsInput}
             />
           </InputWrapper>
         </ItemWrapper>
@@ -120,7 +125,7 @@ const InputWrapper = styled.span`
   align-items: center;
 `;
 
-const ListItemInput = styled.input`
+const Input = styled.input`
   width: 2rem;
   height: 1.5rem;
   font-size: 1.1rem;
@@ -133,16 +138,16 @@ const ListItemInput = styled.input`
   }
 `;
 
-const VolumeInput = styled(ListItemInput)`
+const VolumeInput = styled(Input)`
   text-align: end;
 `;
 
-const UnitsInput = styled(ListItemInput)`
+const UnitsInput = styled(Input)`
   color: grey;
   width: 1.5rem;
 `;
 
-const NameInput = styled(ListItemInput)`
+const NameInput = styled(Input)`
   font-weight: 300;
   font-size: 1.2rem;
   width: 50vw;

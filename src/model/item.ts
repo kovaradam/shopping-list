@@ -2,7 +2,8 @@ import { DBRecord } from '../db/model';
 
 export interface DBItemInput extends DBRecord {
   name: string;
-  isDiscarded?: boolean;
+  volume?: number;
+  units?: string;
 }
 
 interface DBItem extends DBItemInput {
@@ -23,7 +24,7 @@ export const discardItem = (item: DBItem): DBItem => {
 export const newItemNamePlaceholder = '5Ft3zDa3bsQKQD';
 
 export const initItems: DBItem[] = [
-  { name: 'potatoes', id: 0 },
-  { name: 'ham', id: 1 },
-  { name: 'Milk', id: 2 },
+  { name: 'potatoes', volume: 1, units: 'kg', id: 0 },
+  { name: 'ham', volume: 200, units: 'g', id: 1 },
+  { name: 'Milk', volume: 1, units: 'l', id: 2 },
 ];
