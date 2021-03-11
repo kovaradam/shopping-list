@@ -21,4 +21,5 @@ const Wrapper = styled.div<Props>`
   width: 100vw;
   height: 100vh;
   z-index: 2;
+  top: 0;
 `;

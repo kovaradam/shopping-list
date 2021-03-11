@@ -56,11 +56,12 @@ const Wrapper = styled.aside<{ isHidden: boolean }>`
   top: 0;
   width: 65vw;
   background-color: white;
-  z-index: 2;
+  z-index: 3;
   transform: translateX(${(props): string => (props.isHidden ? '-105%' : '0%')});
   transition: transform 170ms ease-in;
   display: flex;
   flex-direction: column;
+  box-shadow: ${(props): string => (!props.isHidden ? '0 0 47px 0px #00000061' : '')};
 `;
 
 const Header = styled.header`

@@ -20,7 +20,7 @@ const Header: React.FC = () => {
       >
         <MenuIcon />
       </Button>
-      <Title>notes</Title>
+      <Title>Shopping list</Title>
       <Button onClick={(): void => addItem(newItemNamePlaceholder)}>
         <AddItemIcon />
       </Button>
@@ -33,14 +33,15 @@ export default Header;
 const Wrapper = styled.header`
   position: fixed;
   top: 0;
-  background-color: black;
+  background-color: white;
+
   width: 100vw;
   height: var(--header-height);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: white;
-  z-index: 3;
+  color: #f89d9d;
+  z-index: 1;
 `;
 
 const Title = styled.h1`

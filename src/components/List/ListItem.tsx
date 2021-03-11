@@ -110,7 +110,7 @@ const ItemWrapper = styled.div`
   padding: 9px 14px;
   padding-bottom: 4px;
   box-sizing: border-box;
-  border-bottom: 1px solid #ffee03;
+  border-bottom: 1px solid #faf5ac;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -138,6 +138,7 @@ const Input = styled.input`
 
 const VolumeInput = styled(Input)`
   text-align: end;
+  color: grey;
 `;
 
 const UnitsInput = styled(Input)`
