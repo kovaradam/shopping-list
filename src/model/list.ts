@@ -31,8 +31,8 @@ export const initLists: DBList[] = [
     name: 'Eggies and bacon',
     id: 2,
     items: [
-      { name: 'eggies', id: 4, volume: 2 },
-      { name: 'bacon', id: 3, volume: 200, units: 'g' },
+      { name: 'eggies', id: 3, volume: 2 },
+      { name: 'bacon', id: 4, volume: 200, units: 'g' },
     ],
   },
 ];

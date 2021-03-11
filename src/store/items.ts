@@ -43,16 +43,13 @@ export const useItems = (): UseItemsReturnType => {
   const addItems = useCallback(
     (items: DBItemInput[]) => {
       items = items.reverse();
-      items.forEach((item) => {
+      const newItems = items.map((item) => {
         const newItem = createViewStoreItem(item, viewStore);
         addItemToViewStore(newItem, viewStore);
+        return { value: newItem };
       });
 
-      update(
-        StoreNames.ITEMS,
-        items.map((item) => ({ value: item })),
-        false,
-      );
+      update(StoreNames.ITEMS, newItems, false);
     },
     [viewStore],
   );
