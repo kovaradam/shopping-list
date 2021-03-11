@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import useStore, { Store, ItemsStore } from '.';
 import { useUpdate } from '../db';
 import { StoreNames } from '../config';
-import DBItem, { DBItemInput } from '../model/item';
+import DBItem, { DBItemInput, filterPlaceholderItems } from '../model/item';
 import { DBList, DBListInput } from '../model/list';
 import { update } from '../db';
 
@@ -34,7 +34,7 @@ export const useItems = (): UseItemsReturnType => {
   );
   const addItem = useCallback(
     (name: string) => {
-      const item = createItem(name, viewStore);
+      const item = createViewStoreItem({ name }, viewStore);
       addItemToViewStore(item, viewStore);
       update(StoreNames.ITEMS, { value: item }, false);
     },
@@ -42,10 +42,12 @@ export const useItems = (): UseItemsReturnType => {
   );
   const addItems = useCallback(
     (items: DBItemInput[]) => {
-      items.forEach(({ name }) => {
-        const item = createItem(name, viewStore);
-        addItemToViewStore(item, viewStore);
+      items = items.reverse();
+      items.forEach((item) => {
+        const newItem = createViewStoreItem(item, viewStore);
+        addItemToViewStore(newItem, viewStore);
       });
+
       update(
         StoreNames.ITEMS,
         items.map((item) => ({ value: item })),
@@ -86,7 +88,10 @@ export const useLists = (): UseListsReturnType => {
   const update = useUpdate();
 
   const updateList = useCallback(
-    (list: DBList | DBListInput) => update('lists', { value: list }),
+    (list: DBList | DBListInput) => {
+      list.items = filterPlaceholderItems(list.items);
+      update('lists', { value: list });
+    },
     [update],
   );
 
@@ -98,11 +103,13 @@ export const useLists = (): UseListsReturnType => {
   return { deleteList, updateList };
 };
 
-function createItem(name: string, state: ItemsStore): DBItem {
-  return { name, id: state._lastItemId + 1 };
+function createViewStoreItem(item: DBItemInput, state: ItemsStore): DBItem {
+  return { ...item, id: state._lastItemId + 1 };
 }
 
 function addItemToViewStore(item: DBItem, state: ItemsStore): void {
+  console.log(item);
+
   state._lastItemId = item.id;
   state._addItem(item);
 }

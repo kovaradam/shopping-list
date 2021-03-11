@@ -7,7 +7,6 @@ import { BiTrash } from 'react-icons/bi';
 import ListItemInput from './ListItemInput';
 
 type Props = {
-  isDisabled?: boolean;
   onSwipeStart?: () => void;
   onSwipeEnd?: () => void;
   onSwipeLeft?: () => void;
@@ -15,8 +14,9 @@ type Props = {
 
 const ListItem: React.FC<Props> = (props) => {
   const { id, name } = props;
-  const [volume, setVolume] = useState(props.volume || 1);
-  const [units, setUnits] = useState(props.units || 'x');
+  const isNewItem = name === newItemNamePlaceholder;
+  const [volume, setVolume] = useState(isNewItem ? 1 : props.volume || NaN);
+  const [units, setUnits] = useState(isNewItem ? 'x' : props.units || '');
   const { updateItem, deleteItem } = useItems();
   const nameInputElement = useRef<HTMLInputElement>(null);
 
@@ -26,16 +26,14 @@ const ListItem: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const currentElement = nameInputElement.current;
-    console.log(nameInputElement);
-
     if (!currentElement) return;
-    if (name === newItemNamePlaceholder && currentElement) {
+    if (isNewItem && currentElement) {
       currentElement.value = '';
       currentElement.focus();
     } else {
       currentElement.value = name;
     }
-  }, [name]);
+  }, [name, isNewItem]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();

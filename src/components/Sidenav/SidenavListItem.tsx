@@ -43,7 +43,10 @@ const SidenavListItem: React.FC<Props> = ({ list }) => {
   }, [isRenameActive]);
 
   useEffect(() => {
-    if (list.name === newListNamePlaceholder) setIsRenameActive(true);
+    if (list.name === newListNamePlaceholder) {
+      list.name = '';
+      setIsRenameActive(true);
+    }
   }, [list]);
 
   return (
