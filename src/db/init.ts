@@ -53,41 +53,43 @@ export const openDB = (
     promiseReject((event.target as IDBOpenDBRequest)?.error + '');
   };
 
-  DBOpenRequest.onupgradeneeded = (event: IDBVersionChangeEvent): void => {
+  DBOpenRequest.onupgradeneeded = (_: IDBVersionChangeEvent): void => {
     if (config.objectStores.some(({ name }) => !name)) {
       promiseReject(
         'Warning: Object store parameters were not provided on version change',
       );
       return;
     }
-    const db = (event.target as IDBOpenDBRequest).result;
 
-    const newStores: ObjectStoreParams[] = [];
-    const upgradedStores: ObjectStoreParams[] = [];
-    config.objectStores.forEach((store) => {
-      if (db.objectStoreNames.contains(store.name)) {
-        upgradedStores.push(store);
-      } else {
-        newStores.push(store);
-      }
-    });
-
-    createStores(db, newStores);
-    upgradeStores(db, upgradedStores);
+    upgradeStores(config.objectStores, DBOpenRequest);
   };
 
   return promise;
 };
 
-function createStores(db: IDBDatabase, params: ObjectStoreParams[]): void {
+function upgradeStores(
+  params: ObjectStoreParams[],
+  DBOpenRequest: IDBOpenDBRequest,
+): void {
+  const { result: db, transaction } = DBOpenRequest;
+
   let objectStore: IDBObjectStore;
   const writers: (() => void)[] = [];
+
   params.forEach(({ name, options, indexes, data }) => {
-    objectStore = db.createObjectStore(name, options);
-    // Create an indexes
-    indexes?.forEach(({ name, keyPath, options }) =>
-      objectStore.createIndex(name, keyPath, options),
-    );
+    if (db.objectStoreNames.contains(name)) {
+      if (!transaction) return;
+      objectStore = transaction.objectStore(name);
+    } else {
+      objectStore = db.createObjectStore(name, options);
+    }
+
+    indexes?.forEach(({ name, keyPath, options }) => {
+      if (objectStore.indexNames.contains(name)) {
+        objectStore.deleteIndex(name);
+      }
+      objectStore.createIndex(name, keyPath, options);
+    });
 
     writers.push((): void => {
       // Store values in the newly created objectStore.
@@ -102,16 +104,5 @@ function createStores(db: IDBDatabase, params: ObjectStoreParams[]): void {
     objectStore.transaction.oncomplete = (_: Event): void => {
       writers.forEach((write) => write());
     };
-  });
-}
-
-function upgradeStores(db: IDBDatabase, params: ObjectStoreParams[]): void {
-  params.forEach(({ name, indexes }) => {
-    const objectStore = db.transaction(name).objectStore(name);
-    // Create an indexes
-    indexes?.forEach(({ name, keyPath, options }) => {
-      objectStore.deleteIndex(name);
-      objectStore.createIndex(name, keyPath, options);
-    });
   });
 }
