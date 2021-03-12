@@ -23,7 +23,6 @@ const SidenavList: React.FC<Props> = ({ isHidden, setIsHiddden }) => {
 
   return (
     <Wrapper isHidden={isHidden}>
-      {!isHidden && <Marker />}
       <Header>
         <SidenavButton Icon={ListsIcon} onClick={toggleIsHidden}>
           Lists
@@ -53,13 +52,6 @@ const Wrapper = styled.div<{ isHidden: boolean }>`
 `;
 
 const Header = styled.div``;
-
-const Marker = styled.div`
-  background-color: var(--sidenav-action-color);
-  width: 7px;
-  height: 100%;
-  position: absolute;
-`;
 
 const List = styled(BareList)``;
 

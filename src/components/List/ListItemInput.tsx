@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled, { StyledComponent } from 'styled-components';
 
 type Props = {
@@ -15,13 +15,29 @@ type Props = {
 
 const ListItemInput: React.FC<Props> = (props) => {
   const { onSubmit } = props;
+  const inputElement = useRef<HTMLInputElement | null>(null);
   return (
     <form onSubmit={onSubmit}>
-      <Input ref={props.inputRef} {...props} />
+      <Input
+        ref={props.inputRef || inputElement}
+        {...props}
+        onFocus={(): void =>
+          placeCaretAtEnd(props.inputRef?.current || inputElement?.current)
+        }
+      />
     </form>
   );
 };
 
 export default ListItemInput;
+
+// stolen from planner.now.sh
+function placeCaretAtEnd(element: HTMLInputElement | null): void {
+  if (!element) return;
+  const position = element.value.length;
+  element.focus();
+  element.setSelectionRange(position, position);
+  console.log(element);
+}
 
 const Input = styled.input``;

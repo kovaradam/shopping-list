@@ -45,11 +45,11 @@ export function asyncRead<T>(storeName: string, params: AsyncReadParams<T>): voi
   };
 }
 
-interface ReadParams<T> extends BaseReadParams {
+interface ReadParams extends BaseReadParams {
   triggerUpdate?: boolean;
 }
 
-export default function read<T>(storeName: string, params?: ReadParams<T>): Promise<T> {
+export default function read<T>(storeName: string, params?: ReadParams): Promise<T> {
   const [promise, resolve, reject] = createPromiseWithOutsideResolvers<T, string>();
 
   function onSuccess(result: T, _: Event): void {
