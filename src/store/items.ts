@@ -105,8 +105,6 @@ function createViewStoreItem(item: DBItemInput, state: ItemsStore): DBItem {
 }
 
 function addItemToViewStore(item: DBItem, state: ItemsStore): void {
-  console.log(item);
-
   state._lastItemId = item.id;
   state._addItem(item);
 }

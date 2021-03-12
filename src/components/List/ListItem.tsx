@@ -110,7 +110,7 @@ const ItemWrapper = styled.div`
   padding: 9px 14px;
   padding-bottom: 4px;
   box-sizing: border-box;
-  border-bottom: 1px solid #faf5ac;
+  border-bottom: 0.3px solid var(--sidenav-action-color);
   display: flex;
   align-items: center;
   justify-content: space-between;

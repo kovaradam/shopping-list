@@ -21,11 +21,6 @@ const SidenavListItem: React.FC<Props> = ({ list }) => {
 
   const renameList = useCallback(() => {
     const newName = nameInputElement.current?.value || '';
-
-    if (newName === '') {
-      setIsRenameActive(false);
-      return;
-    }
     updateList({ ...list, name: newName });
     setIsRenameActive(false);
   }, [setIsRenameActive, list, updateList]);
@@ -44,18 +39,13 @@ const SidenavListItem: React.FC<Props> = ({ list }) => {
       const inputElement = nameInputElement.current;
       if (!inputElement) return;
       inputElement?.focus();
-      const name = isNewList ? '' : list.name;
-      inputElement.value = name;
-      inputElement.setSelectionRange(name.length, name.length);
+      if (isNewList) {
+        list.name = '';
+      }
+      inputElement.value = list.name;
+      inputElement.setSelectionRange(list.name.length, list.name.length);
     }
   }, [isRenameActive, list, isNewList]);
-
-  // useEffect(() => {
-  //   if (list.name === newListNamePlaceholder) {
-  //     list.name = '';
-  //     setIsRenameActive(true);
-  //   }
-  // }, [list]);
 
   return (
     <Wrapper>
