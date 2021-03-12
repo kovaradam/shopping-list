@@ -37,7 +37,6 @@ function placeCaretAtEnd(element: HTMLInputElement | null): void {
   const position = element.value.length;
   element.focus();
   element.setSelectionRange(position, position);
-  console.log(element);
 }
 
 const Input = styled.input``;

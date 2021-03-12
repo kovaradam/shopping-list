@@ -9,8 +9,9 @@ import DropDownMenu from '../DropDownMenu';
 type Props = { list: DBList };
 
 const SidenavListItem: React.FC<Props> = ({ list }) => {
+  const isNewList = list.name === newListNamePlaceholder;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isRenameActive, setIsRenameActive] = useState(false);
+  const [isRenameActive, setIsRenameActive] = useState(isNewList);
   const { updateList, deleteList } = useLists();
   const { addItems } = useItems();
 
@@ -39,15 +40,22 @@ const SidenavListItem: React.FC<Props> = ({ list }) => {
   );
 
   useEffect(() => {
-    if (isRenameActive) nameInputElement.current?.focus();
-  }, [isRenameActive]);
-
-  useEffect(() => {
-    if (list.name === newListNamePlaceholder) {
-      list.name = '';
-      setIsRenameActive(true);
+    if (isRenameActive) {
+      const inputElement = nameInputElement.current;
+      if (!inputElement) return;
+      inputElement?.focus();
+      const name = isNewList ? '' : list.name;
+      inputElement.value = name;
+      inputElement.setSelectionRange(name.length, name.length);
     }
-  }, [list]);
+  }, [isRenameActive, list, isNewList]);
+
+  // useEffect(() => {
+  //   if (list.name === newListNamePlaceholder) {
+  //     list.name = '';
+  //     setIsRenameActive(true);
+  //   }
+  // }, [list]);
 
   return (
     <Wrapper>
