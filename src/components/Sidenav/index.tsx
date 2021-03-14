@@ -6,7 +6,8 @@ import useOnClickOutside from '../../hooks/on-click-outside';
 import Overlay from '../Overlay';
 import SidenavButton from './SidenavButton';
 import { useItems, useLists } from '../../store/items';
-import SidenavList from './SidenavList';
+import Lists from './Lists';
+import Settings from './Settings';
 import { newListNamePlaceholder } from '../../model/list';
 
 const Sidenav: React.FC = () => {
@@ -41,7 +42,8 @@ const Sidenav: React.FC = () => {
           <SidenavButton Icon={ClearIcon} onClick={deleteCurrentList}>
             Delete items
           </SidenavButton>
-          <SidenavList isHidden={isListHidden} setIsHiddden={setIsListHiddden} />
+          <Lists isHidden={isListHidden} setIsHidden={setIsListHiddden} />
+          <Settings />
         </ContentWrapper>
       </Wrapper>
     </>
@@ -74,7 +76,7 @@ const Header = styled.header`
   padding-right: 10px;
   box-sizing: border-box;
   font-size: var(--header-font-size);
-  color: var(--sidenav-action-color);
+  color: ${(props): string => props.theme.main};
   letter-spacing: var(--header-letter-spacing);
 `;
 

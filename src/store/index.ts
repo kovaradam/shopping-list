@@ -11,6 +11,10 @@ export type ItemsStore = {
 };
 
 export type LayoutStore = {
+  themeColor: string;
+  setThemeColor: (themeColor: string) => void;
+  isShowDiscardedItems: boolean;
+  toggleIsShowDiscardedItems: () => void;
   isSidenavHidden: boolean;
   toggleIsSidenavHidden: () => void;
 };
@@ -24,11 +28,18 @@ const useStore = create<Store>((set) => ({
   updateItem: (item: DBItemInput | DBItem): void => updateItem(set, item),
   deleteItem: (id: number): void => deleteItem(set, id),
   setItems: (newItems: DBItem[]): void => set(() => ({ items: newItems })),
-  isSidenavHidden: true,
   toggleIsSidenavHidden: (): void =>
     set((state) => ({
       isSidenavHidden: !state.isSidenavHidden,
     })),
+  isShowDiscardedItems: false,
+  isSidenavHidden: true,
+  toggleIsShowDiscardedItems: (): void =>
+    set((state) => ({
+      isShowDiscardedItems: !state.isShowDiscardedItems,
+    })),
+  themeColor: window.localStorage.getItem('themeColor') || '#fdcdcd',
+  setThemeColor: (themeColor: string): void => set(() => setThemeColor(themeColor)),
 }));
 
 export default useStore;
@@ -76,4 +87,9 @@ export function loadItems(items: DBItem[]): void {
   items.forEach(({ id }) => (maxId = id > maxId ? id : maxId));
   useStore.getState()._lastItemId = maxId;
   useStore.getState().setItems(items);
+}
+
+function setThemeColor(themeColor: string) {
+  window.localStorage.setItem('themeColor', themeColor);
+  return { themeColor };
 }

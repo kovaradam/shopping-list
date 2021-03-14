@@ -1,42 +1,40 @@
 import React, { useCallback } from 'react';
-import { FiFolder, FiChevronDown } from 'react-icons/fi';
-import styled from 'styled-components';
-import { StoreNames } from '../../config';
-import { useRead } from '../../db';
-import { DBList } from '../../model/list';
+import { FiChevronDown } from 'react-icons/fi';
+import styled, { ThemedStyledFunction } from 'styled-components';
 import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';
 import SidenavButton from './SidenavButton';
-import SidenavListItem from './SidenavListItem';
 
 type Props = {
   isHidden: boolean;
-  setIsHiddden: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsHidden: React.Dispatch<React.SetStateAction<boolean>>;
+  title: string;
+  Icon: React.FC;
 };
 
-const SidenavList: React.FC<Props> = ({ isHidden, setIsHiddden }) => {
-  const lists = useRead<DBList[]>(StoreNames.LISTS, { keepResults: true });
-
+const SidenavList: React.FC<Props> = ({
+  isHidden,
+  setIsHidden,
+  title,
+  Icon,
+  children,
+}) => {
   const toggleIsHidden = useCallback((): void => {
-    setIsHiddden((isHidden) => !isHidden);
-  }, [setIsHiddden]);
+    setIsHidden((isHidden) => !isHidden);
+  }, [setIsHidden]);
 
   return (
     <Wrapper isHidden={isHidden}>
       <Header>
-        <SidenavButton Icon={ListsIcon} onClick={toggleIsHidden}>
-          Lists
+        <SidenavButton Icon={Icon} onClick={toggleIsHidden}>
+          {title}
           <ListButtonIconWrapper isHidden={isHidden}>
             <ListButtonIcon />
           </ListButtonIconWrapper>
         </SidenavButton>
       </Header>
       <SlideDown isHidden={isHidden}>
-        <List>
-          {lists?.map((list) => (
-            <SidenavListItem list={list} key={list.id} />
-          ))}
-        </List>
+        <List>{children}</List>
       </SlideDown>
     </Wrapper>
   );
@@ -61,4 +59,3 @@ const ListButtonIconWrapper = styled.span<{ isHidden: boolean }>`
 `;
 
 const ListButtonIcon = styled(FiChevronDown)``;
-const ListsIcon = styled(FiFolder)``;

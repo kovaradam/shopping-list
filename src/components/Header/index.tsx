@@ -40,7 +40,7 @@ const Wrapper = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--sidenav-action-color);
+  color: ${(props): string => props.theme.main};
   z-index: 1;
   box-shadow: 0 0 14px 0 #80808033;
 `;
