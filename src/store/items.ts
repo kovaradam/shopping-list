@@ -59,8 +59,11 @@ export const useItems = (): UseItemsReturnType => {
   }, [viewStore]);
 
   const deleteItem = useCallback(
-    (id: number) => {
-      viewStore.deleteItem(id);
+    (id: number, isDiscarded: boolean) => {
+      viewStore.deleteItem(id, isDiscarded);
+      if (!isDiscarded) {
+        update(StoreNames.ITEMS, { value: { isDiscarded: true, id: -id }, key: id });
+      }
       update(StoreNames.ITEMS, { value: null, key: id });
     },
     [viewStore],

@@ -4,7 +4,7 @@ import DBItem, { DBItemInput, discardItem, filterPlaceholderItems } from '../mod
 export type ItemsStore = {
   items: DBItem[];
   _addItem: (item: DBItem) => void;
-  deleteItem: (id: number) => void;
+  deleteItem: (id: number, isDiscarded: boolean) => void;
   updateItem: (item: DBItemInput | DBItem) => void;
   setItems: (newItems: DBItem[]) => void;
   _lastItemId: number;
@@ -26,17 +26,19 @@ const useStore = create<Store>((set) => ({
   _lastItemId: 0,
   _addItem: (item: DBItem): void => addItem(set, item),
   updateItem: (item: DBItemInput | DBItem): void => updateItem(set, item),
-  deleteItem: (id: number): void => deleteItem(set, id),
+  deleteItem: (id: number, isDiscarded: boolean): void =>
+    deleteItem(set, id, isDiscarded),
   setItems: (newItems: DBItem[]): void => set(() => ({ items: newItems })),
+  isSidenavHidden: true,
   toggleIsSidenavHidden: (): void =>
     set((state) => ({
       isSidenavHidden: !state.isSidenavHidden,
     })),
-  isShowDiscardedItems: false,
-  isSidenavHidden: true,
+  isShowDiscardedItems:
+    window.localStorage.getItem('isShowDiscardedItems') === 'true' || false,
   toggleIsShowDiscardedItems: (): void =>
-    set((state) => ({
-      isShowDiscardedItems: !state.isShowDiscardedItems,
+    set(() => ({
+      isShowDiscardedItems: toggleIsShowDiscardedItems(),
     })),
   themeColor: window.localStorage.getItem('themeColor') || '#fdcdcd',
   setThemeColor: (themeColor: string): void => set(() => setThemeColor(themeColor)),
@@ -69,15 +71,20 @@ function updateItem(set: StoreSetter, updateItem: DBItemInput | DBItem): void {
   });
 }
 
-function deleteItem(set: StoreSetter, id: number): void {
+function deleteItem(set: StoreSetter, id: number, isDiscarded: boolean): void {
   set((state) => {
+    let discardedItem: DBItem | null = null;
     const newItems = filterPlaceholderItems(state.items).map((item) => {
       if (item.id !== id) {
         return item;
       } else {
+        discardedItem = { ...item, isDiscarded: true };
         return discardItem(item);
       }
     });
+    if (discardedItem && !isDiscarded) {
+      newItems.push(discardedItem);
+    }
     return { items: newItems };
   });
 }
@@ -89,7 +96,17 @@ export function loadItems(items: DBItem[]): void {
   useStore.getState().setItems(items);
 }
 
-function setThemeColor(themeColor: string) {
+function setThemeColor(themeColor: string): { themeColor: string } {
   window.localStorage.setItem('themeColor', themeColor);
   return { themeColor };
+}
+
+function toggleIsShowDiscardedItems(): boolean {
+  const isShowDiscardedItems =
+    window.localStorage.getItem('isShowDiscardedItems') === 'true';
+  window.localStorage.setItem(
+    'isShowDiscardedItems',
+    isShowDiscardedItems ? 'false' : 'true',
+  );
+  return !isShowDiscardedItems;
 }

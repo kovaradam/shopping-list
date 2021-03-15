@@ -8,16 +8,18 @@ export interface DBItemInput extends DBRecord {
 
 interface DBItem extends DBItemInput {
   id: number;
+  isPlaceholder?: boolean;
+  isDiscarded?: boolean;
 }
 
 export default DBItem;
 
 export const filterPlaceholderItems = (items: DBItem[]): DBItem[] => {
-  return items.filter((item) => !item.isDiscarded);
+  return items.filter((item) => !item.isPlaceholder);
 };
 
 export const discardItem = (item: DBItem): DBItem => {
-  item.isDiscarded = true;
+  item.isPlaceholder = true;
   return item;
 };
 

@@ -5,6 +5,7 @@ import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
 import ListItemInput from './ListItemInput';
+import useStore from '../../store';
 
 type Props = {
   onSwipeStart?: () => void;
@@ -13,16 +14,17 @@ type Props = {
 } & DBItem;
 
 const ListItem: React.FC<Props> = (props) => {
-  const { id, name } = props;
+  const { id, name, isDiscarded, isPlaceholder } = props;
   const isNewItem = name === newItemNamePlaceholder;
   const [volume, setVolume] = useState(isNewItem ? 1 : props.volume || NaN);
   const [units, setUnits] = useState(isNewItem ? 'x' : props.units || '');
   const { updateItem, deleteItem } = useItems();
+  const { isShowDiscardedItems } = useStore();
   const nameInputElement = useRef<HTMLInputElement>(null);
 
   const handleSwipeLeft = useCallback((): void => {
-    deleteItem(id);
-  }, [id, deleteItem]);
+    deleteItem(id, !!isDiscarded);
+  }, [id, deleteItem, isDiscarded]);
 
   useEffect(() => {
     const currentElement = nameInputElement.current;
@@ -33,7 +35,7 @@ const ListItem: React.FC<Props> = (props) => {
     } else {
       currentElement.value = name;
     }
-  }, [name, isNewItem]);
+  }, [name, isNewItem, isDiscarded]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -45,8 +47,12 @@ const ListItem: React.FC<Props> = (props) => {
     updateItem({ name: newName, id, volume, units });
   }, [nameInputElement, id, volume, units, updateItem]);
 
-  if (props.isDiscarded) {
-    return <DeletePlaceholder />;
+  if (isPlaceholder) {
+    return <HideItemPlaceholder />;
+  }
+
+  if (isDiscarded && !isShowDiscardedItems) {
+    return null;
   }
 
   return (
@@ -56,13 +62,14 @@ const ListItem: React.FC<Props> = (props) => {
       onSwipeEnd={props.onSwipeEnd}
     >
       <Container>
-        <ItemWrapper>
+        <ItemWrapper isDiscarded={isDiscarded}>
           <ListItemInput
             onSubmit={handleFormSubmit}
             tabIndex={id}
             inputRef={nameInputElement}
             onBlur={handleUpdate}
             as={NameInput}
+            disabled={isDiscarded}
           />
           <InputWrapper>
             <ListItemInput
@@ -74,6 +81,7 @@ const ListItem: React.FC<Props> = (props) => {
               pattern="[0-9]*"
               onBlur={handleUpdate}
               as={VolumeInput}
+              disabled={isDiscarded}
             />
             <ListItemInput
               onSubmit={handleFormSubmit}
@@ -83,6 +91,7 @@ const ListItem: React.FC<Props> = (props) => {
               onBlur={handleUpdate}
               type=""
               as={UnitsInput}
+              disabled={isDiscarded}
             />
           </InputWrapper>
         </ItemWrapper>
@@ -105,17 +114,18 @@ const Container = styled.li`
   height: min-content;
 `;
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.div<{ isDiscarded?: boolean }>`
   width: 100%;
   padding: 9px 14px;
   padding-bottom: 4px;
   box-sizing: border-box;
-  border-bottom: 0.3px solid ${(props): string => props.theme.main};
+  border-bottom: 0.3px solid
+    ${(props): string => (props.isDiscarded ? 'white' : props.theme.main)};
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: ${itemHeight};
-  background-color: white;
+  background-color: ${(props): string => (props.isDiscarded ? '#80808012' : 'white')};
 `;
 
 const InputWrapper = styled.span`
@@ -147,12 +157,14 @@ const UnitsInput = styled(Input)`
   width: 1.5rem;
 `;
 
-const NameInput = styled(Input)`
+const NameInput = styled(Input)<{ isDiscarded?: boolean }>`
   font-weight: 300;
   font-size: 1.2rem;
   width: 50vw;
   height: auto;
   box-sizing: border-box;
+  text-decoration: ${(props): string =>
+    props.isDiscarded ? 'line-through 2px solid grey' : 'unset'};
 `;
 
 const hideItem = keyframes`
@@ -164,7 +176,7 @@ const hideItem = keyframes`
   }
 `;
 
-const DeletePlaceholder = styled.div`
+const HideItemPlaceholder = styled.div`
   animation: ${hideItem} forwards 200ms;
 `;
 

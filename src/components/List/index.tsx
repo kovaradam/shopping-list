@@ -27,7 +27,7 @@ const List: React.FC = () => {
           onSwipeStart={handleItemSwipeStart}
           onSwipeEnd={handleItemSwipeEnd}
           {...item}
-          key={item.id}
+          key={`${item.id}_${item.isDiscarded ? 'discarded' : ''}`}
         />
       ))}
     </UList>

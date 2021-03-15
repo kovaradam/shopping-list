@@ -65,7 +65,8 @@ function put(data: UpdateData, objectStore: IDBObjectStore): void {
   request.onsuccess = (_: Event): void => {
     const DBObject = request.result;
     Object.assign(DBObject, value);
-    objectStore.put(DBObject, key as IDBValidKey);
+    // objectStore.put(DBObject, key as IDBValidKey);
+    objectStore.put(DBObject);
   };
 }
 

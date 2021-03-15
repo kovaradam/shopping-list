@@ -11,6 +11,7 @@ type Props = {
   pattern?: string;
   inputRef?: React.RefObject<HTMLInputElement>;
   as: StyledComponent<'input', Record<string, unknown>, Record<string, unknown>, never>;
+  disabled?: boolean;
 };
 
 const ListItemInput: React.FC<Props> = (props) => {
@@ -21,6 +22,7 @@ const ListItemInput: React.FC<Props> = (props) => {
       <Input
         ref={props.inputRef || inputElement}
         {...props}
+        isDiscarded={props.disabled}
         onFocus={(): void =>
           placeCaretAtEnd(props.inputRef?.current || inputElement?.current)
         }
