@@ -5,7 +5,6 @@ import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
 import ListItemInput from './ListItemInput';
-import useStore from '../../store';
 
 type Props = {
   onSwipeStart?: () => void;
@@ -19,7 +18,6 @@ const ListItem: React.FC<Props> = (props) => {
   const [volume, setVolume] = useState(isNewItem ? 1 : props.volume || NaN);
   const [units, setUnits] = useState(isNewItem ? 'x' : props.units || '');
   const { updateItem, deleteItem } = useItems();
-  const { isShowDiscardedItems } = useStore();
   const nameInputElement = useRef<HTMLInputElement>(null);
 
   const handleSwipeLeft = useCallback((): void => {
@@ -35,7 +33,7 @@ const ListItem: React.FC<Props> = (props) => {
     } else {
       currentElement.value = name;
     }
-  }, [name, isNewItem, isDiscarded]);
+  }, [name, isNewItem]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
@@ -49,10 +47,6 @@ const ListItem: React.FC<Props> = (props) => {
 
   if (isPlaceholder) {
     return <HideItemPlaceholder />;
-  }
-
-  if (isDiscarded && !isShowDiscardedItems) {
-    return null;
   }
 
   return (

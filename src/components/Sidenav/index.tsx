@@ -53,7 +53,7 @@ const Sidenav: React.FC = () => {
 export default Sidenav;
 
 const Wrapper = styled.aside<{ isHidden: boolean }>`
-  height: 100%;
+  height: 100vh;
   position: fixed;
   top: 0;
   width: 65vw;
@@ -90,6 +90,9 @@ const ContentWrapper = styled.div`
   width: 100%;
   height: min-content;
   padding-top: 13px;
+  height: calc(100vh - var(--header-height));
+  overflow-x: hidden;
+  overflow-y: scroll;
 `;
 
 const SaveIcon = styled(FiFolderPlus)``;

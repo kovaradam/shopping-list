@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { FiChevronDown } from 'react-icons/fi';
-import styled, { ThemedStyledFunction } from 'styled-components';
+import styled from 'styled-components';
 import BareList from '../../styles/BareList';
 import SlideDown from '../SlideDown';
 import SidenavButton from './SidenavButton';

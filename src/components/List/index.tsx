@@ -1,11 +1,13 @@
 import React, { useCallback, useRef } from 'react';
 import styled from 'styled-components';
+import useStore from '../../store';
 import { useItems } from '../../store/items';
 import BareList from '../../styles/BareList';
 import ListItem from './ListItem';
 
 const List: React.FC = () => {
   const { items } = useItems();
+  const { isShowDiscardedItems } = useStore();
 
   const containerElement = useRef<HTMLUListElement>(null);
   const preventDocumentScroll = useCallback((event: TouchEvent): void => {
@@ -22,14 +24,27 @@ const List: React.FC = () => {
 
   return (
     <UList ref={containerElement}>
-      {items.map((item) => (
-        <ListItem
-          onSwipeStart={handleItemSwipeStart}
-          onSwipeEnd={handleItemSwipeEnd}
-          {...item}
-          key={`${item.id}_${item.isDiscarded ? 'discarded' : ''}`}
-        />
-      ))}
+      {items
+        .filter(({ isDiscarded }) => !isDiscarded)
+        .map((item) => (
+          <ListItem
+            onSwipeStart={handleItemSwipeStart}
+            onSwipeEnd={handleItemSwipeEnd}
+            {...item}
+            key={item.id}
+          />
+        ))}
+      {isShowDiscardedItems &&
+        items
+          .filter(({ isDiscarded }) => isDiscarded)
+          .map((item) => (
+            <ListItem
+              onSwipeStart={handleItemSwipeStart}
+              onSwipeEnd={handleItemSwipeEnd}
+              {...item}
+              key={`${item.id}_'discarded'`}
+            />
+          ))}
     </UList>
   );
 };
@@ -38,7 +53,7 @@ export default List;
 
 const UList = styled(BareList)`
   width: 100vw;
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: scroll;
   height: calc(100vh - var(--header-height));
 `;
