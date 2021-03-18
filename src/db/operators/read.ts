@@ -21,7 +21,6 @@ export function asyncRead<T>(storeName: string, params: AsyncReadParams<T>): voi
 
   if (params?.key) {
     const request = objectStore.get(params.key);
-
     request.onsuccess = (event: Event): void => {
       onSuccess(request.result, event);
     };
@@ -40,6 +39,7 @@ export function asyncRead<T>(storeName: string, params: AsyncReadParams<T>): voi
       }
     };
   }
+
   transaction.onerror = (event: Event): void => {
     params.onError && params.onError(event);
   };

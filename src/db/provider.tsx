@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { openDB, Config } from './init';
+import { openDB, Config } from './open';
 import Store from './store';
 
 type Props = { config: Config };
@@ -41,12 +41,10 @@ const IndexedDBProvider: React.FC<Props> = ({ config, children }) => {
 
   const onOpen = useCallback(
     (db: IDBDatabase) => {
-      Store.setDB(db);
       Store.setTriggerUpdate(triggerUpdate);
-      config.onOpen && config.onOpen();
       setDB(db);
     },
-    [config, setDB, triggerUpdate],
+    [setDB, triggerUpdate],
   );
 
   useEffect(() => {

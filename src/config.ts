@@ -1,4 +1,4 @@
-import { Config } from './db/init';
+import { Config } from './db/open';
 import { read } from './db';
 import { initItems } from './model/item';
 import { initLists } from './model/list';
@@ -30,5 +30,6 @@ export const DBConfig: Config = {
       data: initLists,
     },
   ],
-  onOpen: async () => loadItems(await read(StoreNames.ITEMS, { direction: 'prev' })),
+  onOpenSuccess: async () =>
+    loadItems(await read(StoreNames.ITEMS, { direction: 'prev' })),
 };

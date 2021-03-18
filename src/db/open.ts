@@ -1,4 +1,5 @@
 import { DBRecord } from './model';
+import Store from './store';
 import { createPromiseWithOutsideResolvers } from './utils';
 
 interface IndexParams {
@@ -20,7 +21,9 @@ export type Config = {
   version?: number;
   objectStores: ObjectStoreParams[];
   keepLastReadResults?: boolean;
-  onOpen?: () => void;
+  onOpenSuccess?: ((db: Event) => void) | (() => void);
+  onOpenError?: ((event: Event) => void) | (() => void);
+  onUpgradeNeeded?: ((event: IDBVersionChangeEvent) => void) | (() => void);
 };
 
 export const openDB = (config: Config): Promise<IDBDatabase> => {
@@ -44,24 +47,31 @@ export const openDB = (config: Config): Promise<IDBDatabase> => {
     db.onerror = (event: Event): void => {
       throw new Error((event.target as IDBRequest)?.error + '');
     };
+    Store.setDB(db);
     promiseResolve(db);
+    if (config.onOpenSuccess) {
+      config.onOpenSuccess(event);
+    }
   };
 
   DBOpenRequest.onerror = (event: Event): void => {
     promiseReject((event.target as IDBOpenDBRequest)?.error + '');
-  };
-
-  DBOpenRequest.onupgradeneeded = (_: IDBVersionChangeEvent): void => {
-    if (config.objectStores.some(({ name }) => !name)) {
-      promiseReject(
-        'Warning: Object store parameters were not provided on version change',
-      );
-      return;
+    if (config.onOpenError) {
+      config.onOpenError(event);
     }
-    console.log('upgrade');
-
-    upgradeStores(config.objectStores, DBOpenRequest);
   };
+
+  DBOpenRequest.onupgradeneeded =
+    config.onUpgradeNeeded ||
+    ((_: IDBVersionChangeEvent): void => {
+      if (config.objectStores.some(({ name }) => !name)) {
+        promiseReject(
+          'Warning: Object store parameters were not provided on version change',
+        );
+        return;
+      }
+      upgradeStores(config.objectStores, DBOpenRequest);
+    });
 
   return promise;
 };
@@ -102,7 +112,7 @@ function upgradeStores(
           if (!dataKey) {
             throw new Error('Store uses out-of-line key and dataKey was not provided');
           }
-          dataObjectStore.add(item, (item as any)[dataKey]);
+          dataObjectStore.add(item, (item as { [key: string]: IDBValidKey })[dataKey]);
         }
       });
     });
