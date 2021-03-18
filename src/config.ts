@@ -7,6 +7,7 @@ import { loadItems } from './store';
 export enum StoreNames {
   LISTS = 'lists',
   ITEMS = 'items',
+  ITEM_NAMES = 'item-names',
 }
 
 export const DBConfig: Config = {
@@ -19,7 +20,7 @@ export const DBConfig: Config = {
     },
     {
       name: StoreNames.LISTS,
-      // if autoIncrement is falsy, keys must be provided on transactions
+      // if keyPath, store uses in-line keys, if not, keys must be provided
       options: { keyPath: 'id', autoIncrement: true },
       indexes: [{ name: 'id', keyPath: 'id', options: { unique: true } }],
       data: initLists,

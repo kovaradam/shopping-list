@@ -5,6 +5,7 @@ import { useItems } from '../../store/items';
 import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
 import ListItemInput from './ListItemInput';
+import ListItemDropDown from './ListItemDropDown';
 
 type Props = {
   onSwipeStart?: () => void;
@@ -15,6 +16,8 @@ type Props = {
 const ListItem: React.FC<Props> = (props) => {
   const { id, name, isDiscarded, isPlaceholder } = props;
   const isNewItem = name === newItemNamePlaceholder;
+  const [nameValue, setNameValue] = useState(name);
+  const [isDropDownVisible, setIsDropDownVisible] = useState(isNewItem);
   const [volume, setVolume] = useState(isNewItem ? 1 : props.volume || NaN);
   const [units, setUnits] = useState(isNewItem ? 'x' : props.units || '');
   const { updateItem, deleteItem } = useItems();
@@ -40,60 +43,77 @@ const ListItem: React.FC<Props> = (props) => {
     ((event.target as HTMLFormElement)[0] as HTMLInputElement).blur();
   };
 
-  const handleUpdate = useCallback(() => {
+  const handleUpdate = useCallback((): void => {
     const newName = nameInputElement.current?.value || '';
     updateItem({ name: newName, id, volume, units });
+    setTimeout(() => setIsDropDownVisible(false), 10);
   }, [nameInputElement, id, volume, units, updateItem]);
+
+  const setValueFromDropDown = useCallback(
+    (value: string): void => {
+      if (!nameInputElement.current) return;
+      nameInputElement.current.value = value;
+      handleUpdate();
+    },
+    [nameInputElement, handleUpdate],
+  );
 
   if (isPlaceholder) {
     return <HideItemPlaceholder />;
   }
 
   return (
-    <Swipeable
-      onSwipeLeft={handleSwipeLeft}
-      onSwipeStart={props.onSwipeStart}
-      onSwipeEnd={props.onSwipeEnd}
-    >
-      <Container>
-        <ItemWrapper isDiscarded={isDiscarded}>
-          <ListItemInput
-            onSubmit={handleFormSubmit}
-            tabIndex={id}
-            inputRef={nameInputElement}
-            onBlur={handleUpdate}
-            as={NameInput}
-            disabled={isDiscarded}
-          />
-          <InputWrapper>
+    <>
+      <Swipeable
+        onSwipeLeft={handleSwipeLeft}
+        onSwipeStart={props.onSwipeStart}
+        onSwipeEnd={props.onSwipeEnd}
+      >
+        <Container>
+          <ItemWrapper isDiscarded={isDiscarded}>
             <ListItemInput
               onSubmit={handleFormSubmit}
               tabIndex={id}
-              value={isNaN(volume) ? '' : volume}
-              onChange={(event): void => setVolume(parseInt(event.target.value))}
-              type="decimal"
-              pattern="[0-9]*"
+              inputRef={nameInputElement}
               onBlur={handleUpdate}
-              as={VolumeInput}
+              as={NameInput}
               disabled={isDiscarded}
+              onChange={(event): void => setNameValue(event.target.value)}
+              onFocus={(): void => setIsDropDownVisible(true)}
             />
-            <ListItemInput
-              onSubmit={handleFormSubmit}
-              tabIndex={id}
-              value={units}
-              onChange={(event): void => setUnits(event.target.value)}
-              onBlur={handleUpdate}
-              type=""
-              as={UnitsInput}
-              disabled={isDiscarded}
-            />
-          </InputWrapper>
-        </ItemWrapper>
-        <DiscardWrapper>
-          <DiscardIcon />
-        </DiscardWrapper>
-      </Container>
-    </Swipeable>
+            <InputWrapper>
+              <ListItemInput
+                onSubmit={handleFormSubmit}
+                tabIndex={id}
+                value={isNaN(volume) ? '' : volume}
+                onChange={(event): void => setVolume(parseInt(event.target.value))}
+                type="decimal"
+                pattern="[0-9]*"
+                onBlur={handleUpdate}
+                as={VolumeInput}
+                disabled={isDiscarded}
+              />
+              <ListItemInput
+                onSubmit={handleFormSubmit}
+                tabIndex={id}
+                value={units}
+                onChange={(event): void => setUnits(event.target.value)}
+                onBlur={handleUpdate}
+                type=""
+                as={UnitsInput}
+                disabled={isDiscarded}
+              />
+            </InputWrapper>
+          </ItemWrapper>
+          <DiscardWrapper>
+            <DiscardIcon />
+          </DiscardWrapper>
+        </Container>
+      </Swipeable>
+      {isDropDownVisible && (
+        <ListItemDropDown value={nameValue} setValue={setValueFromDropDown} />
+      )}
+    </>
   );
 };
 
@@ -114,7 +134,7 @@ const ItemWrapper = styled.div<{ isDiscarded?: boolean }>`
   padding-bottom: 4px;
   box-sizing: border-box;
   border-bottom: 0.3px solid
-    ${(props): string => (props.isDiscarded ? 'white' : props.theme.main)};
+    ${(props): string => (props.isDiscarded ? 'white' : props.theme.main + '30')};
   display: flex;
   align-items: center;
   justify-content: space-between;

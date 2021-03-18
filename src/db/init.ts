@@ -1,8 +1,5 @@
+import { DBRecord } from './model';
 import { createPromiseWithOutsideResolvers } from './utils';
-
-interface DBErrorEventTarget extends EventTarget {
-  errorCode: string;
-}
 
 interface IndexParams {
   name: string;
@@ -10,24 +7,25 @@ interface IndexParams {
   options?: IDBIndexParameters;
 }
 
-interface ObjectStoreParams {
+export interface ObjectStoreParams {
   name: string;
   options?: IDBObjectStoreParameters;
   indexes?: IndexParams[];
-  data: unknown[];
+  data: DBRecord[];
+  dataKey?: string;
 }
 
 export type Config = {
+  name?: string;
+  version?: number;
   objectStores: ObjectStoreParams[];
   keepLastReadResults?: boolean;
   onOpen?: () => void;
 };
 
-export const openDB = (
-  name: string,
-  version: number,
-  config: Config,
-): Promise<IDBDatabase> => {
+export const openDB = (config: Config): Promise<IDBDatabase> => {
+  const name = config.name || 'ReactiveDB';
+  const version = config.version || 1;
   const DBOpenRequest = window.indexedDB.open(name, version);
 
   const [promise, promiseResolve, promiseReject] = createPromiseWithOutsideResolvers<
@@ -37,14 +35,14 @@ export const openDB = (
 
   if (!window.indexedDB) {
     promiseReject(
-      "Your browser doesn't support a stable version of IndexedDB. Sme features will not be available.",
+      "Your browser doesn't support a stable version of IndexedDB. Some features will not be available.",
     );
   }
 
   DBOpenRequest.onsuccess = (event: Event): void => {
     const db = (event.target as IDBOpenDBRequest).result;
     db.onerror = (event: Event): void => {
-      console.log((event.target as DBErrorEventTarget)?.errorCode);
+      throw new Error((event.target as IDBRequest)?.error + '');
     };
     promiseResolve(db);
   };
@@ -76,7 +74,7 @@ function upgradeStores(
   let objectStore: IDBObjectStore;
   const writers: (() => void)[] = [];
 
-  params.forEach(({ name, options, indexes, data }) => {
+  params.forEach(({ name, options, indexes, data, dataKey }) => {
     if (db.objectStoreNames.contains(name)) {
       if (!transaction) return;
       objectStore = transaction.objectStore(name);
@@ -95,7 +93,14 @@ function upgradeStores(
       // Store values in the newly created objectStore.
       const dataObjectStore = db.transaction(name, 'readwrite').objectStore(name);
       data.forEach((item) => {
-        dataObjectStore.add(item);
+        if (dataObjectStore.keyPath) {
+          dataObjectStore.add(item);
+        } else {
+          if (!dataKey) {
+            throw new Error('Store uses out-of-line key and dataKey was not provided');
+          }
+          dataObjectStore.add(item, (item as any)[dataKey]);
+        }
       });
     });
 

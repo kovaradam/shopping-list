@@ -56,17 +56,26 @@ export default function update<T>(
 }
 
 function put(data: UpdateData, objectStore: IDBObjectStore): void {
-  const { value, key } = data;
+  const { value, key, replace } = data;
+
   if (!key) {
     objectStore.put(value);
     return;
   }
+  if (replace) {
+    objectStore.put(value, key as IDBValidKey);
+    return;
+  }
+
   const request = objectStore.get(key);
   request.onsuccess = (_: Event): void => {
     const DBObject = request.result;
     Object.assign(DBObject, value);
-    // objectStore.put(DBObject, key as IDBValidKey);
-    objectStore.put(DBObject);
+    if (!objectStore.keyPath) {
+      objectStore.put(DBObject, key as IDBValidKey);
+    } else {
+      objectStore.put(DBObject);
+    }
   };
 }
 

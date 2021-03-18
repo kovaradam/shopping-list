@@ -18,9 +18,7 @@ body {
   top: var(--header-height);
 }
 
-body * {
-  outline-color: var(--sidenav-action-color);
-}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;

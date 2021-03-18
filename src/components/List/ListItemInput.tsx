@@ -4,6 +4,7 @@ import styled, { StyledComponent } from 'styled-components';
 type Props = {
   onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
   onBlur: () => void;
+  onFocus?: () => void;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   tabIndex: number;
   value?: unknown;
@@ -23,9 +24,10 @@ const ListItemInput: React.FC<Props> = (props) => {
         ref={props.inputRef || inputElement}
         {...props}
         isDiscarded={props.disabled}
-        onFocus={(): void =>
-          placeCaretAtEnd(props.inputRef?.current || inputElement?.current)
-        }
+        onFocus={(): void => {
+          placeCaretAtEnd(props.inputRef?.current || inputElement?.current);
+          props.onFocus && props.onFocus();
+        }}
       />
     </form>
   );
@@ -33,7 +35,6 @@ const ListItemInput: React.FC<Props> = (props) => {
 
 export default ListItemInput;
 
-// stolen from planner.now.sh
 function placeCaretAtEnd(element: HTMLInputElement | null): void {
   if (!element) return;
   const position = element.value.length;
