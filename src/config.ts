@@ -20,8 +20,6 @@ export const DBConfig: Config = {
       data: initItems,
     },
     {
-      // options: { keyPath: 'name' },
-      // indexes: [{ name: 'name', keyPath: 'name', options: { unique: true } }],
       name: StoreNames.ITEM_NAMES,
     },
     {
