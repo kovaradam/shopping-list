@@ -6,6 +6,8 @@ import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
 import ListItemInput from './ListItemInput';
 import ListItemDropDown from './ListItemDropDown';
+import { update } from '../../db';
+import { StoreNames } from '../../config';
 
 type Props = {
   onSwipeStart?: () => void;
@@ -46,6 +48,13 @@ const ListItem: React.FC<Props> = (props) => {
   const handleUpdate = useCallback((): void => {
     const newName = nameInputElement.current?.value || '';
     updateItem({ name: newName, id, volume, units });
+    if (newName.length) {
+      const value = newName[0].toUpperCase() + newName.slice(1);
+      update(StoreNames.ITEM_NAMES, {
+        value,
+        key: value,
+      });
+    }
     setTimeout(() => setIsDropDownVisible(false), 10);
   }, [nameInputElement, id, volume, units, updateItem]);
 

@@ -11,12 +11,18 @@ export enum StoreNames {
 }
 
 export const DBConfig: Config = {
+  version: 1,
   objectStores: [
     {
       name: StoreNames.ITEMS,
       options: { keyPath: 'id' },
       indexes: [{ name: 'id', keyPath: 'id', options: { unique: true } }],
       data: initItems,
+    },
+    {
+      // options: { keyPath: 'name' },
+      // indexes: [{ name: 'name', keyPath: 'name', options: { unique: true } }],
+      name: StoreNames.ITEM_NAMES,
     },
     {
       name: StoreNames.LISTS,

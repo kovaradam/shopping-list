@@ -11,7 +11,7 @@ export interface ObjectStoreParams {
   name: string;
   options?: IDBObjectStoreParameters;
   indexes?: IndexParams[];
-  data: DBRecord[];
+  data?: DBRecord[];
   dataKey?: string;
 }
 
@@ -58,6 +58,7 @@ export const openDB = (config: Config): Promise<IDBDatabase> => {
       );
       return;
     }
+    console.log('upgrade');
 
     upgradeStores(config.objectStores, DBOpenRequest);
   };
@@ -88,6 +89,8 @@ function upgradeStores(
       }
       objectStore.createIndex(name, keyPath, options);
     });
+
+    if (!data) return;
 
     writers.push((): void => {
       // Store values in the newly created objectStore.

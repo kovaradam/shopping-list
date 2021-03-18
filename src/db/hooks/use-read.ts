@@ -40,9 +40,17 @@ function useRead<T extends DBRecord | DBRecord[]>(
   }
 
   function onSuccess(result: T, _: Event): void {
-    if (!compareStringifiedObjects(result as T, lastResult.value)) {
+    const compare =
+      typeof result === 'object'
+        ? compareStringifiedObjects
+        : (a: unknown, b: unknown): boolean => a === b;
+    if (
+      !compare(
+        result as Record<string, unknown>,
+        lastResult.value as Record<string, unknown>,
+      )
+    ) {
       const newResult = createReadResult<T>(result as T, transactionCount);
-
       setLastResult(newResult);
     }
   }

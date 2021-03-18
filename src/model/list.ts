@@ -1,7 +1,6 @@
-import { DBRecord } from '../db/model';
 import DBItem from './item';
 
-export interface DBListInput extends DBRecord {
+export interface DBListInput extends Record<string, unknown> {
   name: string;
   items: DBItem[];
 }

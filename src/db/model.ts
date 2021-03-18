@@ -1,4 +1,4 @@
-export type DBRecord = Record<string, unknown>;
+export type DBRecord = Record<string, unknown> | string | number;
 
 export type UpdateData = {
   value: DBRecord | null;
