@@ -19,7 +19,7 @@
     "eslint-plugin-react": "^7.20.6",
     "git-scripts": "^0.4.3",
     "husky": "^4.3.6",
-    "indexeddb-hooked": "^0.1.0",
+    "indexeddb-hooked": "^0.1.2",
     "lint-staged": "^10.5.3",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
