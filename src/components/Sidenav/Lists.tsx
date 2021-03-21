@@ -5,7 +5,7 @@ import BareButton from '../../styles/BareButton';
 import { FiFolder, FiMoreVertical } from 'react-icons/fi';
 import styled from 'styled-components';
 import { StoreNames } from '../../config';
-import { useRead } from '../../db';
+import { useRead } from 'indexeddb-hooked';
 import DropDownMenu from '../DropDownMenu';
 import SidenavList from './SidenavList';
 import SidenavListItem, { ItemMainButton, ItemActionButton } from './SidenavListItem';

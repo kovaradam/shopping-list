@@ -1,10 +1,9 @@
 import { useCallback } from 'react';
 import useStore, { Store, ItemsStore } from '.';
-import { useUpdate } from '../db';
 import { StoreNames } from '../config';
 import DBItem, { DBItemInput, filterPlaceholderItems } from '../model/item';
 import { DBList, DBListInput } from '../model/list';
-import { update } from '../db';
+import { update, useUpdate } from 'indexeddb-hooked';
 
 const itemsSelector = (state: Store): ItemsStore => {
   return {

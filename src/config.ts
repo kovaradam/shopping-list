@@ -1,5 +1,4 @@
-import { Config } from './db/open';
-import { read } from './db';
+import { read, Config } from 'indexeddb-hooked';
 import { initItems } from './model/item';
 import { initLists } from './model/list';
 import { loadItems } from './store';

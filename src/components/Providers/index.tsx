@@ -2,7 +2,7 @@ import React from 'react';
 import { IconContext } from 'react-icons/lib';
 import { ThemeProvider } from 'styled-components';
 import { DBConfig } from '../../config';
-import IndexedDBProvider from '../../db/provider';
+import { IndexedDBProvider } from 'indexeddb-hooked';
 import useStore from '../../store';
 
 const Providers: React.FC = ({ children }) => {

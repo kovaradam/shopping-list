@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { compareTwoStrings } from 'string-similarity';
-import { read, update } from '../../db';
+import { read, update } from 'indexeddb-hooked';
 import { StoreNames } from '../../config';
 import BareList from '../../styles/BareList';
 import BareButton from '../../styles/BareButton';

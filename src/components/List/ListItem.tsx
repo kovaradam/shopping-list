@@ -6,7 +6,7 @@ import Swipeable from '../Swipeable';
 import { BiTrash } from 'react-icons/bi';
 import ListItemInput from './ListItemInput';
 import ListItemDropDown from './ListItemDropDown';
-import { update } from '../../db';
+import { update } from 'indexeddb-hooked';
 import { StoreNames } from '../../config';
 
 type Props = {
