@@ -13,8 +13,8 @@ const ListItemDropDown: React.FC<Props> = ({ value, setValue }) => {
   const [names, setNames] = useState<string[]>([]);
   useEffect(() => {
     async function updateNames(): Promise<void> {
-      const DBNames = await read<string[]>(StoreNames.ITEM_NAMES);
-      setNames(DBNames.filter((name) => compareTwoStrings(name, value) > 0.3));
+      const DBNames = await read<string>(StoreNames.ITEM_NAMES);
+      setNames(DBNames?.filter((name) => compareTwoStrings(name, value) > 0.3) || []);
     }
     updateNames();
   }, [value]);

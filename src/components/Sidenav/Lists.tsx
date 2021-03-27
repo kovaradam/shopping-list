@@ -16,7 +16,7 @@ type Props = {
 };
 
 const Lists: React.FC<Props> = (props) => {
-  const lists = useRead<DBList[]>(StoreNames.LISTS, { keepResults: true });
+  const lists = useRead<DBList>(StoreNames.LISTS);
 
   return (
     <SidenavList {...props} title="Lists" Icon={ListsIcon}>

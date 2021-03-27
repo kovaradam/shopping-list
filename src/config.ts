@@ -30,5 +30,5 @@ export const DBConfig: Config = {
     },
   ],
   onOpenSuccess: async () =>
-    loadItems(await read(StoreNames.ITEMS, { direction: 'prev' })),
+    loadItems((await read(StoreNames.ITEMS, { direction: 'prev' })) || []),
 };
