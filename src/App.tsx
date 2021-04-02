@@ -1,8 +1,12 @@
+import { open } from 'indexeddb-hooked';
 import React from 'react';
 import styled from 'styled-components';
 import Header from './components/Header';
 import List from './components/List';
 import Sidenav from './components/Sidenav';
+import { DBConfig } from './config';
+
+open(DBConfig);
 
 const App: React.FC = () => {
   return (
