@@ -37,8 +37,8 @@
     "zustand": "^3.2.0"
   },
   "scripts": {
-    "prepublish": "npm run build",
-    "publish": "surge --project ./build --domain shp-lst.surge.sh",
+    "predeploy": "npm run build",
+    "deploy": "surge --project ./build --domain shp-lst.surge.sh",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -77,7 +77,7 @@
   "git": {
     "scripts": {
       "pre-push": [
-        "npm run publish"
+        "npm run deploy"
       ]
     }
   },
