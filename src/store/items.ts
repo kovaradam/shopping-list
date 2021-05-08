@@ -84,7 +84,7 @@ type UseListsReturnType = {
 };
 
 export const useLists = (): UseListsReturnType => {
-  const update = useUpdate();
+  const [update] = useUpdate();
 
   const updateList = useCallback(
     (list: DBList | DBListInput) => {

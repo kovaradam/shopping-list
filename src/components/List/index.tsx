@@ -11,7 +11,9 @@ const List: React.FC = () => {
 
   const containerElement = useRef<HTMLUListElement>(null);
   const preventDocumentScroll = useCallback((event: TouchEvent): void => {
-    if (event.cancelable) event.preventDefault();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
   }, []);
 
   const handleItemSwipeStart = useCallback(() => {
