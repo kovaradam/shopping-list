@@ -1,14 +1,25 @@
 import { open } from 'indexeddb-hooked';
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Header from './components/Header';
 import List from './components/List';
 import Sidenav from './components/Sidenav';
-import { DBConfig } from './config';
+import { DBConfig, DEV } from './config';
 
 open(DBConfig);
 
 const App: React.FC = () => {
+  useEffect(() => {
+    if (DEV) {
+      return;
+    }
+
+    const { location } = window;
+    if (location.protocol !== 'https:') {
+      location.replace(`https:${location.href.substring(location.protocol.length)}`);
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Header />

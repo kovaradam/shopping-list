@@ -32,3 +32,5 @@ export const DBConfig: Config = {
   onOpenSuccess: async () =>
     loadItems((await read(StoreNames.ITEMS, { direction: 'prev' })) || []),
 };
+
+export const DEV = process.env.NODE_ENV !== 'production';
